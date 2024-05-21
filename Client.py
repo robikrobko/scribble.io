@@ -13,6 +13,22 @@ class PaintApp:
         self.penColor = "black"
         self.stroke = 1
         self.setup_ui()
+        self.slova = [
+            "auto", "bicykel", "dom", "elektrina", "futbal", "gitara", "hra", "internet",
+            "jazero", "klavír", "lampáš", "mobil", "nôž", "obraz", "park", "quinoa",
+            "rieka", "strom", "tráva", "učenie", "voda", "zviera", "žaba", "lietadlo",
+            "cesta", "dievča", "chlapec", "elefant", "film", "guma", "hračka", "iglu",
+            "jablko", "králik", "lavica", "mlyn", "noc", "ocot", "papier", "raketa",
+            "srdce", "tabuľa", "ulica", "vlna", "zub", "žiarovka", "lev", "kvet",
+            "šport", "lampa", "sneh", "leto", "teplomer", "vrtuľa", "tank", "školský",
+            "kostol", "banka", "internet", "kuchyňa", "strom", "bylinka", "mydlo",
+            "práca", "vankúš", "topánka", "strana", "ryža", "muzika", "kníhkupectvo",
+            "záhrada", "ovocie", "zelenina", "použitie", "hračka", "čokoláda", "piesok",
+            "kosť", "horský", "tvár", "pohár", "rúž", "doktor", "operácia", "domáce",
+            "opička", "helikoptéra", "tyger", "raketa", "návšteva", "lekcia", "škola",
+            "slovník", "jazda", "turistika", "obchod", "tancovanie", "hudba", "flóra",
+            "zoológia", "historik", "zemepis"
+        ]
 
     def setup_ui(self):
         self.holder = Frame(self.parent, height=120, width=500, bg="white", padx=100, pady=10)
