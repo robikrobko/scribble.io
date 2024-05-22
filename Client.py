@@ -6,7 +6,39 @@ import select
 import datetime
 
 def vyberSlovo():
-    words = ["auto", "dom", "strom", "kvet", "pes", "macka", "slon", "lod", "hracka", "ryba"]
+    words = ["auto", "dom", "pes", "škola", "hra", "kniha", "cesta", "hračka", "káva", "mesto",
+         "les", "horská chata", "hračka", "jablko", "počítač", "chlieb", "koláč", "jedlo",
+         "hudba", "film", "rastlina", "stôl", "okno", "dvere", "lopta", "bicí", "hudba",
+         "detská izba", "obchod", "trh", "obrázok", "fotografia", "krajina", "voda",
+         "ocean", "rieka", "jazero", "pláž", "loď", "letadlo", "vlak", "horský vrch",
+         "hory", "hora", "zima", "jeseň", "jar", "leto", "slnečný", "mračno", "dážď",
+         "sneh", "vietor", "mráz", "teplota", "krajina", "poľnohospodárstvo", "lesníctvo",
+         "zvieratá", "pes", "mačka", "vták", "ryba", "sliepka", "krava", "ovca", "kôza",
+         "koník", "žirafa", "lev", "tiger", "slon", "medveď", "vlk", "čajka", "sova",
+         "papagáj", "korytnačka", "krokodíl", "hady", "zajac", "myš", "hadica", "motýľ",
+         "včela", "mravce", "škorpión", "mravčiar", "slon", "žirafa", "tiger", "jazvec",
+         "gorila", "orangutan", "šimpanz", "delfín", "veľryba", "tučniak", "pingvin",
+         "papagáj", "kanár", "holub", "sokol", "orol", "kondor", "sliepka", "kačica",
+         "hus", "labuť", "čajka", "sova", "straka", "kos", "vážka", "motýľ", "chrobák",
+         "komár", "osádka", "včela", "medováčik", "pčela", "bumbar", "motýlik", "hmyz",
+         "krava", "dážď", "mráz", "vietor", "jeseň", "zima", "zima", "jeseň", "leto",
+         "jaro", "teplota", "horúčava", "studený", "chladný", "mrazivý", "teplo", "teplý",
+         "príjemný", "nepríjemný", "krásny", "škaredý", "šťastný", "smutný", "veselý",
+         "úbohý", "bohatý", "vzácny", "bežný", "slávny", "neznámy", "známy", "rovný",
+         "krivý", "šíriť", "zúžiť", "rozšíriť", "skrátiť", "predĺžiť", "zvýšiť", "znížiť",
+         "rásť", "klesať", "strmý", "mierny", "prudký", "rovný", "vlnitý", "horký", "studený",
+         "teplý", "chladný", "jasný", "zatiahnutý", "slnečný", "zamračený", "dážď", "sneh",
+         "vietor", "búrka", "búrlivý", "tichý", "hučanie", "šum", "vlnenie", "vánok", "víchrica",
+         "váľanie", "hrčenie", "driapavka", "chrčenie", "rachot", "štekot", "vybuchnutie",
+         "prasknutie", "šumivý", "klokotavý", "plápolavý", "pleskotavý", "ťukotavý", "šepotavý",
+         "krikľavý", "hučiavý", "vrčavý", "hrčavý", "driapavý", "kráčavý", "šepotavý", "plášť",
+         "šatka", "tričko", "blúzka", "šaty", "sukňa", "nohavice", "šortky", "pančuchy", "ponožky",
+         "topánky", "topánky", "čižmy", "šľapky", "tenisky", "kabelka", "taška", "aktovka", "pekárna",
+         "cukráreň", "potraviny", "obuv", "oblečenie", "obuvník", "odkaz", "oznámenie", "poznámka",
+         "správa", "správa", "zpráva", "email", "komentár", "dopis", "list", "článok", "článok",
+         "noviny", "noviny", "časopis", "časopis", "bulletin", "bulletin", "plán", "plán", "návrh",
+         "návrh", "projekt", "projekt", "program", "program", "agenda", "agenda", "úloha", "úloha",
+         "cvičenie", "cvičenie", "príklad", "príklad", "test", "test", "skúška", "skúška"]
     current_word = random.choice(words)
     return current_word
 
