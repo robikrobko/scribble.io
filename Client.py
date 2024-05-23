@@ -7,52 +7,70 @@ import datetime
 
 def vyberSlovo():
     words = ["auto", "dom", "pes", "škola", "hra", "kniha", "cesta", "hračka", "káva", "mesto",
-         "les", "horská chata", "hračka", "jablko", "počítač", "chlieb", "koláč", "jedlo",
-         "hudba", "film", "rastlina", "stôl", "okno", "dvere", "lopta", "bicí", "hudba",
-         "detská izba", "obchod", "trh", "obrázok", "fotografia", "krajina", "voda",
-         "ocean", "rieka", "jazero", "pláž", "loď", "letadlo", "vlak", "horský vrch",
-         "hory", "hora", "zima", "jeseň", "jar", "leto", "slnečný", "mračno", "dážď",
-         "sneh", "vietor", "mráz", "teplota", "krajina", "poľnohospodárstvo", "lesníctvo",
-         "zvieratá", "pes", "mačka", "vták", "ryba", "sliepka", "krava", "ovca", "kôza",
-         "koník", "žirafa", "lev", "tiger", "slon", "medveď", "vlk", "čajka", "sova",
-         "papagáj", "korytnačka", "krokodíl", "hady", "zajac", "myš", "hadica", "motýľ",
-         "včela", "mravce", "škorpión", "mravčiar", "slon", "žirafa", "tiger", "jazvec",
-         "gorila", "orangutan", "šimpanz", "delfín", "veľryba", "tučniak", "pingvin",
-         "papagáj", "kanár", "holub", "sokol", "orol", "kondor", "sliepka", "kačica",
-         "hus", "labuť", "čajka", "sova", "straka", "kos", "vážka", "motýľ", "chrobák",
-         "komár", "osádka", "včela", "medováčik", "pčela", "bumbar", "motýlik", "hmyz",
-         "krava", "dážď", "mráz", "vietor", "jeseň", "zima", "zima", "jeseň", "leto",
-         "jaro", "teplota", "horúčava", "studený", "chladný", "mrazivý", "teplo", "teplý",
-         "príjemný", "nepríjemný", "krásny", "škaredý", "šťastný", "smutný", "veselý",
-         "úbohý", "bohatý", "vzácny", "bežný", "slávny", "neznámy", "známy", "rovný",
-         "krivý", "šíriť", "zúžiť", "rozšíriť", "skrátiť", "predĺžiť", "zvýšiť", "znížiť",
-         "rásť", "klesať", "strmý", "mierny", "prudký", "rovný", "vlnitý", "horký", "studený",
-         "teplý", "chladný", "jasný", "zatiahnutý", "slnečný", "zamračený", "dážď", "sneh",
-         "vietor", "búrka", "búrlivý", "tichý", "hučanie", "šum", "vlnenie", "vánok", "víchrica",
-         "váľanie", "hrčenie", "driapavka", "chrčenie", "rachot", "štekot", "vybuchnutie",
-         "prasknutie", "šumivý", "klokotavý", "plápolavý", "pleskotavý", "ťukotavý", "šepotavý",
-         "krikľavý", "hučiavý", "vrčavý", "hrčavý", "driapavý", "kráčavý", "šepotavý", "plášť",
-         "šatka", "tričko", "blúzka", "šaty", "sukňa", "nohavice", "šortky", "pančuchy", "ponožky",
-         "topánky", "topánky", "čižmy", "šľapky", "tenisky", "kabelka", "taška", "aktovka", "pekárna",
-         "cukráreň", "potraviny", "obuv", "oblečenie", "obuvník", "odkaz", "oznámenie", "poznámka",
-         "správa", "správa", "zpráva", "email", "komentár", "dopis", "list", "článok", "článok",
-         "noviny", "noviny", "časopis", "časopis", "bulletin", "bulletin", "plán", "plán", "návrh",
-         "návrh", "projekt", "projekt", "program", "program", "agenda", "agenda", "úloha", "úloha",
-         "cvičenie", "cvičenie", "príklad", "príklad", "test", "test", "skúška", "skúška"]
+             "les", "horská chata", "hračka", "jablko", "počítač", "chlieb", "koláč", "jedlo",
+             "hudba", "film", "rastlina", "stôl", "okno", "dvere", "lopta", "bicí", "hudba",
+             "detská izba", "obchod", "trh", "obrázok", "fotografia", "krajina", "voda",
+             "ocean", "rieka", "jazero", "pláž", "loď", "letadlo", "vlak", "horský vrch",
+             "hory", "hora", "zima", "jeseň", "jar", "leto", "slnečný", "mračno", "dážď",
+             "sneh", "vietor", "mráz", "teplota", "krajina", "poľnohospodárstvo", "lesníctvo",
+             "zvieratá", "pes", "mačka", "vták", "ryba", "sliepka", "krava", "ovca", "kôza",
+             "koník", "žirafa", "lev", "tiger", "slon", "medveď", "vlk", "čajka", "sova",
+             "papagáj", "korytnačka", "krokodíl", "hady", "zajac", "myš", "hadica", "motýľ",
+             "včela", "mravce", "škorpión", "mravčiar", "slon", "žirafa", "tiger", "jazvec",
+             "gorila", "orangutan", "šimpanz", "delfín", "veľryba", "tučniak", "pingvin",
+             "papagáj", "kanár", "holub", "sokol", "orol", "kondor", "sliepka", "kačica",
+             "hus", "labuť", "čajka", "sova", "straka", "kos", "vážka", "motýľ", "chrobák",
+             "komár", "osádka", "včela", "medováčik", "pčela", "bumbar", "motýlik", "hmyz",
+             "krava", "dážď", "mráz", "vietor", "jeseň", "zima", "zima", "jeseň", "leto",
+             "jaro", "teplota", "horúčava", "studený", "chladný", "mrazivý", "teplo", "teplý",
+             "príjemný", "nepríjemný", "krásny", "škaredý", "šťastný", "smutný", "veselý",
+             "úbohý", "bohatý", "vzácny", "bežný", "slávny", "neznámy", "známy", "rovný",
+             "krivý", "šíriť", "zúžiť", "rozšíriť", "skrátiť", "predĺžiť", "zvýšiť", "znížiť",
+             "rásť", "klesať", "strmý", "mierny", "prudký", "rovný", "vlnitý", "horký", "studený",
+             "teplý", "chladný", "jasný", "zatiahnutý", "slnečný", "zamračený", "dážď", "sneh",
+             "vietor", "búrka", "búrlivý", "tichý", "hučanie", "šum", "vlnenie", "vánok", "víchrica",
+             "váľanie", "hrčenie", "driapavka", "chrčenie", "rachot", "štekot", "vybuchnutie",
+             "prasknutie", "šumivý", "klokotavý", "plápolavý", "pleskotavý", "ťukotavý", "šepotavý",
+             "krikľavý", "hučiavý", "vrčavý", "hrčavý", "driapavý", "kráčavý", "šepotavý", "plášť",
+             "šatka", "tričko", "blúzka", "šaty", "sukňa", "nohavice", "šortky", "pančuchy", "ponožky",
+             "topánky", "topánky", "čižmy", "šľapky", "tenisky", "kabelka", "taška", "aktovka", "pekárna",
+             "cukráreň", "potraviny", "obuv", "oblečenie", "obuvník", "odkaz", "oznámenie", "poznámka",
+             "správa", "správa", "zpráva", "email", "komentár", "dopis", "list", "článok", "článok",
+             "noviny", "noviny", "časopis", "časopis", "bulletin", "bulletin", "plán", "plán", "návrh",
+             "návrh", "projekt", "projekt", "program", "program", "agenda", "agenda", "úloha", "úloha",
+             "cvičenie", "cvičenie", "príklad", "príklad", "test", "test", "skúška", "skúška"]
     current_word = random.choice(words)
     return current_word
 
+def ciarky(slovo):
+    pismena = ""
+    for i in range(len(slovo)):
+        pismena += " _"
+    return pismena
+
+def ciarky_premena(hodnota, hodnota2):
+    dlzka = len(hodnota)
+    novy = list(hodnota2.replace(" ", ""))
+    while True:
+        vyber = random.randint(0, dlzka - 1)
+        if novy[vyber] == "_":
+            novy[vyber] = hodnota[vyber]
+            break
+    return " ".join(novy)
+
 class PaintApp:
-    def __init__(self, parent, chat_window, timer_label, points_label):
+    def __init__(self, parent, chat_window, timer_label, points_label, letter_label):
         self.parent = parent
         self.chat_window = chat_window
         self.timer_label = timer_label
         self.points_label = points_label
+        self.letter_label = letter_label
+        self.hodnota = vyberSlovo()
+        self.hodnota2 = ciarky(self.hodnota)
         self.prevPoint = [0, 0]
         self.currentPoint = [0, 0]
         self.penColor = "black"
         self.stroke = 1
-        self.current_word = vyberSlovo()
         self.timer_seconds = 60
         self.drawing_enabled = False
         self.setup_ui()
@@ -81,7 +99,7 @@ class PaintApp:
         clearButton.grid(row=0, column=5)
 
         # Add word label and button to choose a new word
-        self.word_label = Label(self.holder, text="Vybrané slovo: " + self.current_word, font=("Arial", 14))
+        self.word_label = Label(self.holder, text="Vybrané slovo: " + self.hodnota, font=("Arial", 14))
         self.word_label.grid(row=1, column=0, columnspan=3, pady=10)
 
         new_word_button = Button(self.holder, text="Vyber nové slovo", height=1, width=12, command=self.update_word)
@@ -115,11 +133,18 @@ class PaintApp:
         self.timer_label.config(text=f"Čas: {self.timer_seconds} s")
         if self.timer_seconds > 0:
             self.timer_seconds -= 1
+            if self.timer_seconds == 39 or self.timer_seconds == 19:
+                self.hodnota2 = ciarky_premena(self.hodnota, self.hodnota2)
+                self.letter_label.config(text=self.hodnota2)
             self.timer_id = self.parent.after(1000, self.update_timer_label)
         else:
             self.timer_id = None
             messagebox.showinfo("Koniec času", "Čas vypršal!")
             self.start_delay()
+            self.update_word()
+            if self.timer_seconds == 39 or self.timer_seconds == 19:
+                self.hodnota2 = ciarky_premena(self.hodnota, self.hodnota2)
+                self.letter_label.config(text=self.hodnota2)
 
     def stop_timer(self):
         if self.timer_id is not None:
@@ -127,8 +152,10 @@ class PaintApp:
             self.timer_id = None
 
     def update_word(self):
-        self.current_word = vyberSlovo()
-        self.word_label.config(text="Vybrané slovo: " + self.current_word)
+        self.hodnota = vyberSlovo()
+        self.hodnota2 = ciarky(self.hodnota)
+        self.word_label.config(text="Vybrané slovo: " + self.hodnota)
+        self.letter_label.config(text="" + self.hodnota2)
         self.clearScreen()
         self.stop_timer()
         self.start_delay()
@@ -227,12 +254,13 @@ class ChatWindow:
         address = self._address.get()
         if address and message:
             entered_word = message
-            if entered_word == self.paint_app.current_word:
+            if entered_word == self.paint_app.hodnota:
                 self._message.delete(0, tk.END)
                 messagebox.showinfo(":)", "Uhadol si!")
                 self.paint_app.update_word()
                 self.paint_app.stop_timer()
                 self.paint_app.start_delay()
+
             else:
                 self._sock.sendto(message.encode(), (address, 20000))
                 self._message.delete(0, tk.END)
@@ -241,7 +269,6 @@ class ChatWindow:
 
     def start_guessing_after_delay(self):
         self.guess_enabled = True
-
 
 if __name__ == "__main__":
     root = tk.Tk()
@@ -254,8 +281,11 @@ if __name__ == "__main__":
     timer_label = Label(header_frame, text="Čas: 60 s", font=("Arial", 20))
     timer_label.pack(side=tk.LEFT, padx=5, pady=5)
 
+    letter_label = Label(header_frame, text=ciarky(vyberSlovo()), font=("Arial", 20))
+    letter_label.pack(side=tk.LEFT, fill=tk.BOTH, expand=True, pady=5)
+
     points_label = Label(header_frame, text="100 BODOV", font=("Arial", 20))
-    points_label.pack(side=tk.RIGHT, padx=5, pady=5)
+    points_label.pack(anchor="center", padx=5, pady=5)
 
     body_frame = Frame(root)
     body_frame.pack(fill=tk.BOTH, expand=True)
@@ -267,7 +297,7 @@ if __name__ == "__main__":
     chat_frame.pack(side=tk.RIGHT, fill=tk.BOTH, expand=True, padx=5, pady=5)
 
     chat_window = ChatWindow(chat_frame, None)  # Pass None for paint_app for now
-    paint_app = PaintApp(paint_frame, chat_window, timer_label, points_label)  # Now chat_window is defined, so you can pass it to PaintApp
+    paint_app = PaintApp(paint_frame, chat_window, timer_label, points_label, letter_label)  # Now chat_window is defined, so you can pass it to PaintApp
     chat_window.paint_app = paint_app
 
     root.mainloop()
