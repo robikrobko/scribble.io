@@ -7,8 +7,7 @@ import datetime
 
 
 
-
-
+ip_lits = []
 
 
 def vyberSlovo():
@@ -67,6 +66,7 @@ def ciarky_premena(hodnota, hodnota2):
 class PaintApp:
     def __init__(self, parent, chat_window, timer_label, points_label, letter_label):
         self.parent = parent
+        self.startButton = startButton
         self.chat_window = chat_window
         self.timer_label = timer_label
         self.points_label = points_label
@@ -114,17 +114,15 @@ class PaintApp:
         self.canvas = Canvas(self.parent, height=450, width=500, bg="white")
         self.canvas.pack(fill=tk.BOTH, expand=True, padx=5, pady=5)
 
-        start_button = Button(self.holder, text="Start", command=self.start_game)
-        start_button.grid(row=1, column=6, padx=5, pady=10)
-
         self.canvas.bind("<B1-Motion>", self.paint)
         self.canvas.bind("<ButtonRelease-1>", self.paint)
         self.canvas.bind("<Button-1>", self.paint)
 
 
 
-    def start_game(self):
+    def start_hra(self):
         self.start_delay()
+        self.startButton.destroy()
 
     def start_delay(self):
         self.timer_label.config(text="Čas: 60 s - Hra sa za chvíľu začne")
@@ -219,6 +217,7 @@ class PaintApp:
 class ChatWindow:
     def __init__(self, parent, paint_app):
         self.parent = parent
+        self.ip_list = ip_lits
         self.paint_app = paint_app
         self.frame = Frame(self.parent)
         self.frame.pack(fill=tk.BOTH, expand=True, padx=5, pady=5)
@@ -243,10 +242,23 @@ class ChatWindow:
         self._btn_send = Button(input_frame, text="Odoslat", command=self.btn_pressed)
         self._btn_send.pack(side=tk.LEFT, padx=5, pady=5)
 
+        self._btn_connect = Button(input_frame, text = "Pripojit", command= self.add_ip)
+        self._btn_connect.pack(side = tk.LEFT, padx= 5, pady = 5)
+
         self._sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
         self._sock.bind(('0.0.0.0', 20000))
 
         self.periodic()
+
+
+
+
+    def add_ip(self):
+        address = self._address.get()
+        if address not in self.ip_list:
+            self.ip_list.append(address)
+        print(self.ip_list)
+
 
     def periodic(self):
         rx_ev, _, _ = select.select([self._sock], [], [], 0)
@@ -254,6 +266,8 @@ class ChatWindow:
             data, address = self._sock.recvfrom(200)
             if self.guess_enabled:
                 self.add_message(address[0], data.decode())
+                if address[0] not in self.ip_list:
+                    self.ip_list.append(address[0])
         self.parent.after(1000, self.periodic)
 
     def add_message(self, address, message):
@@ -286,12 +300,10 @@ class ChatWindow:
         self.guess_enabled = True
 
 
-
-
 if __name__ == "__main__":
     root = tk.Tk()
     root.title("MultiApp - Paint and Chat")
-    root.geometry("1100x650")
+    root.geometry("1300x650")
 
     header_frame = Frame(root, height=50, width=1100)
     header_frame.pack(fill=tk.X, padx=5, pady=5)
@@ -302,8 +314,13 @@ if __name__ == "__main__":
     letter_label = Label(header_frame, text=ciarky(vyberSlovo()), font=("Arial", 20))
     letter_label.pack(side=tk.LEFT, fill=tk.BOTH, expand=True, pady=5)
 
+
+
     points_label = Label(header_frame, text="100 BODOV", font=("Arial", 20))
-    points_label.pack(anchor="center", padx=5, pady=5)
+    points_label.pack(side = tk.RIGHT, padx=5, pady=5)
+
+    startButton = Button(header_frame, text="START", height=1, width=12)
+    startButton.pack(side=tk.RIGHT, padx=5, pady=5)
 
     body_frame = Frame(root)
     body_frame.pack(fill=tk.BOTH, expand=True)
@@ -316,6 +333,8 @@ if __name__ == "__main__":
 
     chat_window = ChatWindow(chat_frame, None)  # Pass None for paint_app for now
     paint_app = PaintApp(paint_frame, chat_window, timer_label, points_label, letter_label)  # Now chat_window is defined, so you can pass it to PaintApp
+    startButton.config(command=paint_app.start_hra)
+
     chat_window.paint_app = paint_app
 
     root.mainloop()
