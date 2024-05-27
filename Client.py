@@ -5,13 +5,19 @@ import socket
 import select
 import datetime
 
+
+
+
+
+
+
 def vyberSlovo():
-    words = ["auto", "dom", "pes", "škola", "hra", "kniha", "cesta", "hračka", "káva", "mesto",
-             "les", "horská chata", "hračka", "jablko", "počítač", "chlieb", "koláč", "jedlo",
-             "hudba", "film", "rastlina", "stôl", "okno", "dvere", "lopta", "bicí", "hudba",
-             "detská izba", "obchod", "trh", "obrázok", "fotografia", "krajina", "voda",
-             "ocean", "rieka", "jazero", "pláž", "loď", "letadlo", "vlak", "horský vrch",
-             "hory", "hora", "zima", "jeseň", "jar", "leto", "slnečný", "mračno", "dážď",
+    words = ["auto", "dom", "pes", "skola", "hra", "kniha", "cesta", "hracka", "kava", "mesto",
+             "les", "horska chata", "hracka", "jablko", "pocitac", "chlieb", "kolac", "jedlo",
+             "hudba", "film", "rastlina", "stol", "okno", "dvere", "lopta", "hudba",
+             "detska izba", "obchod", "trh", "obrazok", "fotografia", "krajina", "voda",
+             "ocean", "rieka", "jazero", "plaz", "lod", "lietadlo", "vlak",
+             "hory", "zima", "jesen", "jar", "leto", "mracno", "dážď",
              "sneh", "vietor", "mráz", "teplota", "krajina", "poľnohospodárstvo", "lesníctvo",
              "zvieratá", "pes", "mačka", "vták", "ryba", "sliepka", "krava", "ovca", "kôza",
              "koník", "žirafa", "lev", "tiger", "slon", "medveď", "vlk", "čajka", "sova",
@@ -21,11 +27,11 @@ def vyberSlovo():
              "papagáj", "kanár", "holub", "sokol", "orol", "kondor", "sliepka", "kačica",
              "hus", "labuť", "čajka", "sova", "straka", "kos", "vážka", "motýľ", "chrobák",
              "komár", "osádka", "včela", "medováčik", "pčela", "bumbar", "motýlik", "hmyz",
-             "krava", "dážď", "mráz", "vietor", "jeseň", "zima", "zima", "jeseň", "leto",
+             "krava", "dážď", "mraz", "vietor", "jeseň", "zima", "zima", "jeseň", "leto",
              "jaro", "teplota", "horúčava", "studený", "chladný", "mrazivý", "teplo", "teplý",
              "príjemný", "nepríjemný", "krásny", "škaredý", "šťastný", "smutný", "veselý",
-             "úbohý", "bohatý", "vzácny", "bežný", "slávny", "neznámy", "známy", "rovný",
-             "krivý", "šíriť", "zúžiť", "rozšíriť", "skrátiť", "predĺžiť", "zvýšiť", "znížiť",
+             "úbohý", "bohatý", "vzácny", "bezný", "slávny", "neznámy", "známy", "rovný",
+             "krivý", "síriť", "zúžiť", "rozšíriť", "skrátiť", "predĺžiť", "zvýšiť", "znížiť",
              "rásť", "klesať", "strmý", "mierny", "prudký", "rovný", "vlnitý", "horký", "studený",
              "teplý", "chladný", "jasný", "zatiahnutý", "slnečný", "zamračený", "dážď", "sneh",
              "vietor", "búrka", "búrlivý", "tichý", "hučanie", "šum", "vlnenie", "vánok", "víchrica",
@@ -108,10 +114,16 @@ class PaintApp:
         self.canvas = Canvas(self.parent, height=450, width=500, bg="white")
         self.canvas.pack(fill=tk.BOTH, expand=True, padx=5, pady=5)
 
+        start_button = Button(self.holder, text="Start", command=self.start_game)
+        start_button.grid(row=1, column=6, padx=5, pady=10)
+
         self.canvas.bind("<B1-Motion>", self.paint)
         self.canvas.bind("<ButtonRelease-1>", self.paint)
         self.canvas.bind("<Button-1>", self.paint)
 
+
+
+    def start_game(self):
         self.start_delay()
 
     def start_delay(self):
@@ -245,6 +257,8 @@ class ChatWindow:
         self.parent.after(1000, self.periodic)
 
     def add_message(self, address, message):
+        if not self.guess_enabled:
+            return
         timestamp = datetime.datetime.now().strftime('%H:%M:%S')
         self.listbox.insert(tk.END, f"{timestamp} {address}: {message}")
         self.listbox.yview(tk.END)
@@ -263,12 +277,16 @@ class ChatWindow:
 
             else:
                 self._sock.sendto(message.encode(), (address, 20000))
+                self.add_message(address, message)
                 self._message.delete(0, tk.END)
                 return
             self._message.delete(0, tk.END)
 
     def start_guessing_after_delay(self):
         self.guess_enabled = True
+
+
+
 
 if __name__ == "__main__":
     root = tk.Tk()
