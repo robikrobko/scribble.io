@@ -7,7 +7,7 @@ import select
 import datetime
 
 ip_lits = []
-vyber_hracov  = []
+
 
 def vyberSlovo():
     words = ["auto", "dom", "pes", "skola", "hra", "kniha", "cesta", "hracka", "kava", "mesto",
@@ -69,11 +69,11 @@ def ciarky_premena(hodnota, hodnota2):
 class PaintApp:
     def __init__(self, parent, chat_window, timer_label, points_label, letter_label):
         self.parent = parent
-        self.vyber_hracov = vyber_hracov
         self.startButton = startButton
         self.ip_list = ip_lits
         self.chat_window = chat_window
         self._address = chat_window._address
+        self.vyber_hracov = chat_window.vyber_hracov
         self.timer_label = timer_label
         self.points_label = points_label
         self.letter_label = letter_label
@@ -87,6 +87,7 @@ class PaintApp:
         self.drawing_enabled = False
         self.setup_ui()
         self.timer_id = None
+
 
     def setup_ui(self):
         self.holder = Frame(self.parent, height=120, width=500, bg="white", padx=100, pady=10)
@@ -131,7 +132,6 @@ class PaintApp:
     def start_delay(self):
         self.timer_label.config(text="Čas: 60 s - Hra sa za chvíľu začne")
         self.parent.after(5000, self.start_timer)
-        self.vyber_hraca()
         self.clearScreen()
         self.drawing_enabled = False
         self.chat_window.guess_enabled = False
@@ -180,13 +180,13 @@ class PaintApp:
         self.start_delay()
 
     def vyber_hraca(self):
-        self.vyber_hracov = self.ip_list.copy()
+        print(self.vyber_hracov)
         hrac = random.choice(self.vyber_hracov)
         for i in range(len(self.vyber_hracov)):
             if self.vyber_hracov[i] == hrac:
                 self.vyber_hracov.remove(self.vyber_hracov[i])
         print(hrac)
-        print(vyber_hracov)
+        print(self.vyber_hracov)
         return hrac
 
 
@@ -243,6 +243,7 @@ class ChatWindow:
         self.frame = Frame(self.parent)
         self.frame.pack(fill=tk.BOTH, expand=True, padx=5, pady=5)
         self.guess_enabled = False
+        self.vyber_hracov = []
 
         self.listbox = tk.Listbox(self.frame)
         self.listbox.pack(fill=tk.BOTH, expand=True)
@@ -279,7 +280,9 @@ class ChatWindow:
             data, address = self._sock.recvfrom(200)
             if address[0] not in self.ip_list:
                 self.ip_list.append(address[0])
-                print(self.ip_list)
+
+                self.vyber_hracov.append(address[0])
+                print(self.vyber_hracov)
             self.add_message(address[0], data.decode())
         self.parent.after(1000, self.periodic)
 
