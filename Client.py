@@ -7,6 +7,7 @@ import select
 import datetime
 
 ip_lits = []
+vyber_hracov  = []
 
 def vyberSlovo():
     words = ["auto", "dom", "pes", "skola", "hra", "kniha", "cesta", "hracka", "kava", "mesto",
@@ -68,6 +69,7 @@ def ciarky_premena(hodnota, hodnota2):
 class PaintApp:
     def __init__(self, parent, chat_window, timer_label, points_label, letter_label):
         self.parent = parent
+        self.vyber_hracov = vyber_hracov
         self.startButton = startButton
         self.ip_list = ip_lits
         self.chat_window = chat_window
@@ -135,10 +137,14 @@ class PaintApp:
         self.chat_window.guess_enabled = False
 
     def start_timer(self):
+        vyber = self.vyber_hraca()
         if self.timer_id is not None:
             self.parent.after_cancel(self.timer_id)
-        self.chat_window.guess_enabled = True
-        self.drawing_enabled = True
+        if vyber != self._address.get():
+            self.chat_window.guess_enabled = True
+        print(self._address.get())
+        if vyber == self._address.get():
+            self.drawing_enabled = True
         self.timer_seconds = 60
         self.update_timer_label()
 
@@ -174,8 +180,13 @@ class PaintApp:
         self.start_delay()
 
     def vyber_hraca(self):
-        hrac = random.choice(self.ip_list)
+        self.vyber_hracov = self.ip_list.copy()
+        hrac = random.choice(self.vyber_hracov)
+        for i in range(len(self.vyber_hracov)):
+            if self.vyber_hracov[i] == hrac:
+                self.vyber_hracov.remove(self.vyber_hracov[i])
         print(hrac)
+        print(vyber_hracov)
         return hrac
 
 
