@@ -1,14 +1,12 @@
 import random
 import tkinter as tk
+from socket import socket
 from tkinter import Frame, Canvas, Button, Label, colorchooser, messagebox
 import socket
 import select
 import datetime
 
-
-
 ip_lits = []
-
 
 def vyberSlovo():
     words = ["auto", "dom", "pes", "skola", "hra", "kniha", "cesta", "hracka", "kava", "mesto",
@@ -43,9 +41,13 @@ def vyberSlovo():
              "správa", "správa", "zpráva", "email", "komentár", "dopis", "list", "článok", "článok",
              "noviny", "noviny", "časopis", "časopis", "bulletin", "bulletin", "plán", "plán", "návrh",
              "návrh", "projekt", "projekt", "program", "program", "agenda", "agenda", "úloha", "úloha",
-             "cvičenie", "cvičenie", "príklad", "príklad", "test", "test", "skúška", "skúška"]
+             "cvičenie"]
     current_word = random.choice(words)
     return current_word
+
+
+
+
 
 def ciarky(slovo):
     pismena = ""
@@ -117,8 +119,6 @@ class PaintApp:
         self.canvas.bind("<B1-Motion>", self.paint)
         self.canvas.bind("<ButtonRelease-1>", self.paint)
         self.canvas.bind("<Button-1>", self.paint)
-
-
 
     def start_hra(self):
         self.start_delay()
@@ -215,6 +215,7 @@ class PaintApp:
         self.canvas.delete("all")
 
 class ChatWindow:
+
     def __init__(self, parent, paint_app):
         self.parent = parent
         self.ip_list = ip_lits
@@ -242,23 +243,24 @@ class ChatWindow:
         self._btn_send = Button(input_frame, text="Odoslat", command=self.btn_pressed)
         self._btn_send.pack(side=tk.LEFT, padx=5, pady=5)
 
-        self._btn_connect = Button(input_frame, text = "Pripojit", command= self.add_ip)
+        self._btn_connect = Button(input_frame, text = "Pripojit", command= self.btn_pressed2)
         self._btn_connect.pack(side = tk.LEFT, padx= 5, pady = 5)
 
         self._sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
         self._sock.bind(('0.0.0.0', 20000))
 
+        self.kontrola()
         self.periodic()
 
 
-
-
-    def add_ip(self):
-        address = self._address.get()
-        if address not in self.ip_list:
-            self.ip_list.append(address)
-        print(self.ip_list)
-
+    def kontrola(self):
+        rx_ev, _, _ = select.select([self._sock], [], [], 0)
+        if rx_ev:
+            date, address = self._sock.recvfrom(200)
+            if address[0] not in self.ip_list:
+                self.ip_list.append(address[0])
+                print(self.ip_list)
+        self.parent.after(1000, self.kontrola)
 
     def periodic(self):
         rx_ev, _, _ = select.select([self._sock], [], [], 0)
@@ -284,11 +286,10 @@ class ChatWindow:
             entered_word = message
             if entered_word == self.paint_app.hodnota:
                 self._message.delete(0, tk.END)
-                messagebox.showinfo(":)", "Uhadol si!")
+                tk.messagebox.showinfo(":)", "Uhadol si!")
                 self.paint_app.update_word()
                 self.paint_app.stop_timer()
                 self.paint_app.start_delay()
-
             else:
                 self._sock.sendto(message.encode(), (address, 20000))
                 self.add_message(address, message)
@@ -296,9 +297,16 @@ class ChatWindow:
                 return
             self._message.delete(0, tk.END)
 
+    def btn_pressed2(self, event=None):
+        address = self._address.get()
+        if address:
+            self._sock.sendto(address.encode(), (address, 20000))
+            self._message.delete(0, tk.END)
+            return
+        self._message.delete(0, tk.END)
+
     def start_guessing_after_delay(self):
         self.guess_enabled = True
-
 
 if __name__ == "__main__":
     root = tk.Tk()
@@ -313,8 +321,6 @@ if __name__ == "__main__":
 
     letter_label = Label(header_frame, text=ciarky(vyberSlovo()), font=("Arial", 20))
     letter_label.pack(side=tk.LEFT, fill=tk.BOTH, expand=True, pady=5)
-
-
 
     points_label = Label(header_frame, text="100 BODOV", font=("Arial", 20))
     points_label.pack(side = tk.RIGHT, padx=5, pady=5)
@@ -331,8 +337,12 @@ if __name__ == "__main__":
     chat_frame = Frame(body_frame, width=550, bg="white")
     chat_frame.pack(side=tk.RIGHT, fill=tk.BOTH, expand=True, padx=5, pady=5)
 
+
+
+
     chat_window = ChatWindow(chat_frame, None)  # Pass None for paint_app for now
-    paint_app = PaintApp(paint_frame, chat_window, timer_label, points_label, letter_label)  # Now chat_window is defined, so you can pass it to PaintApp
+    paint_app = PaintApp(paint_frame, chat_window, timer_label, points_label, letter_label)
+      # Now chat_window is defined, so you can pass it to PaintApp
     startButton.config(command=paint_app.start_hra)
 
     chat_window.paint_app = paint_app
