@@ -69,7 +69,9 @@ class PaintApp:
     def __init__(self, parent, chat_window, timer_label, points_label, letter_label):
         self.parent = parent
         self.startButton = startButton
+        self.ip_list = ip_lits
         self.chat_window = chat_window
+        self._address = chat_window._address
         self.timer_label = timer_label
         self.points_label = points_label
         self.letter_label = letter_label
@@ -127,6 +129,7 @@ class PaintApp:
     def start_delay(self):
         self.timer_label.config(text="Čas: 60 s - Hra sa za chvíľu začne")
         self.parent.after(5000, self.start_timer)
+        self.vyber_hraca()
         self.clearScreen()
         self.drawing_enabled = False
         self.chat_window.guess_enabled = False
@@ -169,6 +172,12 @@ class PaintApp:
         self.clearScreen()
         self.stop_timer()
         self.start_delay()
+
+    def vyber_hraca(self):
+        hrac = random.choice(self.ip_list)
+        print(hrac)
+        return hrac
+
 
     def strokeI(self):
         if self.stroke != 10:
@@ -248,28 +257,19 @@ class ChatWindow:
 
         self._sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
         self._sock.bind(('0.0.0.0', 20000))
-
-        self.kontrola()
         self.periodic()
 
 
-    def kontrola(self):
-        rx_ev, _, _ = select.select([self._sock], [], [], 0)
-        if rx_ev:
-            date, address = self._sock.recvfrom(200)
-            if address[0] not in self.ip_list:
-                self.ip_list.append(address[0])
-                print(self.ip_list)
-        self.parent.after(1000, self.kontrola)
+
 
     def periodic(self):
         rx_ev, _, _ = select.select([self._sock], [], [], 0)
         if rx_ev:
             data, address = self._sock.recvfrom(200)
-            if self.guess_enabled:
-                self.add_message(address[0], data.decode())
-                if address[0] not in self.ip_list:
-                    self.ip_list.append(address[0])
+            if address[0] not in self.ip_list:
+                self.ip_list.append(address[0])
+                print(self.ip_list)
+            self.add_message(address[0], data.decode())
         self.parent.after(1000, self.periodic)
 
     def add_message(self, address, message):
