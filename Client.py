@@ -6,7 +6,7 @@ import socket
 import select
 import datetime
 
-ip_lits = []
+ip_list = []
 
 
 def vyberSlovo():
@@ -25,29 +25,9 @@ def vyberSlovo():
              "papagáj", "kanár", "holub", "sokol", "orol", "kondor", "sliepka", "kačica",
              "hus", "labuť", "čajka", "sova", "straka", "kos", "vážka", "motýľ", "chrobák",
              "komár", "osádka", "včela", "medováčik", "pčela", "bumbar", "motýlik", "hmyz",
-             "krava", "dážď", "mraz", "vietor", "jeseň", "zima", "zima", "jeseň", "leto",
-             "jaro", "teplota", "horúčava", "studený", "chladný", "mrazivý", "teplo", "teplý",
-             "príjemný", "nepríjemný", "krásny", "škaredý", "šťastný", "smutný", "veselý",
-             "úbohý", "bohatý", "vzácny", "bezný", "slávny", "neznámy", "známy", "rovný",
-             "krivý", "síriť", "zúžiť", "rozšíriť", "skrátiť", "predĺžiť", "zvýšiť", "znížiť",
-             "rásť", "klesať", "strmý", "mierny", "prudký", "rovný", "vlnitý", "horký", "studený",
-             "teplý", "chladný", "jasný", "zatiahnutý", "slnečný", "zamračený", "dážď", "sneh",
-             "vietor", "búrka", "búrlivý", "tichý", "hučanie", "šum", "vlnenie", "vánok", "víchrica",
-             "váľanie", "hrčenie", "driapavka", "chrčenie", "rachot", "štekot", "vybuchnutie",
-             "prasknutie", "šumivý", "klokotavý", "plápolavý", "pleskotavý", "ťukotavý", "šepotavý",
-             "krikľavý", "hučiavý", "vrčavý", "hrčavý", "driapavý", "kráčavý", "šepotavý", "plášť",
-             "šatka", "tričko", "blúzka", "šaty", "sukňa", "nohavice", "šortky", "pančuchy", "ponožky",
-             "topánky", "topánky", "čižmy", "šľapky", "tenisky", "kabelka", "taška", "aktovka", "pekárna",
-             "cukráreň", "potraviny", "obuv", "oblečenie", "obuvník", "odkaz", "oznámenie", "poznámka",
-             "správa", "správa", "zpráva", "email", "komentár", "dopis", "list", "článok", "článok",
-             "noviny", "noviny", "časopis", "časopis", "bulletin", "bulletin", "plán", "plán", "návrh",
-             "návrh", "projekt", "projekt", "program", "program", "agenda", "agenda", "úloha", "úloha",
-             "cvičenie"]
+             "krava", "dážď", "mraz", "vietor", "jeseň", "zima", "zima", "jeseň", "leto"]
     current_word = random.choice(words)
     return current_word
-
-
-
 
 
 def ciarky(slovo):
@@ -70,7 +50,7 @@ class PaintApp:
     def __init__(self, parent, chat_window, timer_label, points_label, letter_label):
         self.parent = parent
         self.startButton = startButton
-        self.ip_list = ip_lits
+        self.ip_list = ip_list
         self.chat_window = chat_window
         self._address = chat_window._address
         self.vyber_hracov = chat_window.vyber_hracov
@@ -238,7 +218,7 @@ class ChatWindow:
 
     def __init__(self, parent, paint_app):
         self.parent = parent
-        self.ip_list = ip_lits
+        self.ip_list = ip_list
         self.paint_app = paint_app
         self.frame = Frame(self.parent)
         self.frame.pack(fill=tk.BOTH, expand=True, padx=5, pady=5)
@@ -284,6 +264,14 @@ class ChatWindow:
                 self.vyber_hracov.append(address[0])
                 print(self.vyber_hracov)
             self.add_message(address[0], data.decode())
+            entered_word = data.decode()
+            if entered_word == self.paint_app.hodnota:
+                self._message.delete(0, tk.END)
+                tk.messagebox.showinfo(":)", "Uhadol" + " " + address[0])
+                self.paint_app.update_word()
+                self.paint_app.stop_timer()
+                self.paint_app.start_delay()
+            print(data.decode())
         self.parent.after(1000, self.periodic)
 
     def add_message(self, address, message):
@@ -297,19 +285,11 @@ class ChatWindow:
         message = self._message.get().strip()
         address = self._address.get()
         if address and message:
-            entered_word = message
-            if entered_word == self.paint_app.hodnota:
-                self._message.delete(0, tk.END)
-                tk.messagebox.showinfo(":)", "Uhadol si!")
-                self.paint_app.update_word()
-                self.paint_app.stop_timer()
-                self.paint_app.start_delay()
-            else:
-                self._sock.sendto(message.encode(), (address, 20000))
-                self.add_message(address, message)
-                self._message.delete(0, tk.END)
-                return
+            self._sock.sendto(message.encode(), (address, 20000))
+            self.add_message(address, message)
             self._message.delete(0, tk.END)
+            return
+        self._message.delete(0, tk.END)
 
     def btn_pressed2(self, event=None):
         address = self._address.get()
