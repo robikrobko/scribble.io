@@ -180,11 +180,13 @@ class PaintApp:
         self.start_delay()
 
     def vyber_hraca(self):
+        if not self.vyber_hracov:
+            messagebox.showinfo("Koniec kola", "koniec kola")
+            return None
 
-        hrac = random.choice(self.vyber_hracov)
-        self.vyber_hracov.remove(hrac)
-        print(hrac)
         print(self.vyber_hracov)
+        hrac = random.choice(self.vyber_hracov)  # Choose a random player
+        self.vyber_hracov.remove(hrac)  # Remove the chosen player from the list
         return hrac
 
 
