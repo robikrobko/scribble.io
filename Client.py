@@ -180,11 +180,9 @@ class PaintApp:
         self.start_delay()
 
     def vyber_hraca(self):
-        print(self.vyber_hracov)
+
         hrac = random.choice(self.vyber_hracov)
-        for i in range(len(self.vyber_hracov)):
-            if self.vyber_hracov[i] == hrac:
-                self.vyber_hracov.remove(self.vyber_hracov[i])
+        self.vyber_hracov.remove(hrac)
         print(hrac)
         print(self.vyber_hracov)
         return hrac
