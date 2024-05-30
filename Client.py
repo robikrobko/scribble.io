@@ -1,9 +1,13 @@
 import random
 import tkinter as tk
+from socket import socket
 from tkinter import Frame, Canvas, Button, Label, colorchooser, messagebox
 import socket
 import select
 import datetime
+
+ip_list = []
+
 
 def vyberSlovo():
     words = ["auto", "dom", "pes", "skola", "hra", "kniha", "cesta", "hracka", "kava", "mesto",
@@ -21,32 +25,17 @@ def vyberSlovo():
              "papagáj", "kanár", "holub", "sokol", "orol", "kondor", "sliepka", "kačica",
              "hus", "labuť", "čajka", "sova", "straka", "kos", "vážka", "motýľ", "chrobák",
              "komár", "osádka", "včela", "medováčik", "pčela", "bumbar", "motýlik", "hmyz",
-             "krava", "dážď", "mraz", "vietor", "jeseň", "zima", "zima", "jeseň", "leto",
-             "jaro", "teplota", "horúčava", "studený", "chladný", "mrazivý", "teplo", "teplý",
-             "príjemný", "nepríjemný", "krásny", "škaredý", "šťastný", "smutný", "veselý",
-             "úbohý", "bohatý", "vzácny", "bezný", "slávny", "neznámy", "známy", "rovný",
-             "krivý", "síriť", "zúžiť", "rozšíriť", "skrátiť", "predĺžiť", "zvýšiť", "znížiť",
-             "rásť", "klesať", "strmý", "mierny", "prudký", "rovný", "vlnitý", "horký", "studený",
-             "teplý", "chladný", "jasný", "zatiahnutý", "slnečný", "zamračený", "dážď", "sneh",
-             "vietor", "búrka", "búrlivý", "tichý", "hučanie", "šum", "vlnenie", "vánok", "víchrica",
-             "váľanie", "hrčenie", "driapavka", "chrčenie", "rachot", "štekot", "vybuchnutie",
-             "prasknutie", "šumivý", "klokotavý", "plápolavý", "pleskotavý", "ťukotavý", "šepotavý",
-             "krikľavý", "hučiavý", "vrčavý", "hrčavý", "driapavý", "kráčavý", "šepotavý", "plášť",
-             "šatka", "tričko", "blúzka", "šaty", "sukňa", "nohavice", "šortky", "pančuchy", "ponožky",
-             "topánky", "topánky", "čižmy", "šľapky", "tenisky", "kabelka", "taška", "aktovka", "pekárna",
-             "cukráreň", "potraviny", "obuv", "oblečenie", "obuvník", "odkaz", "oznámenie", "poznámka",
-             "správa", "správa", "zpráva", "email", "komentár", "dopis", "list", "článok", "článok",
-             "noviny", "noviny", "časopis", "časopis", "bulletin", "bulletin", "plán", "plán", "návrh",
-             "návrh", "projekt", "projekt", "program", "program", "agenda", "agenda", "úloha", "úloha",
-             "cvičenie", "cvičenie", "príklad", "príklad", "test", "test", "skúška", "skúška"]
+             "krava", "dážď", "mraz", "vietor", "jeseň", "zima", "zima", "jeseň", "leto"]
     current_word = random.choice(words)
     return current_word
+
 
 def ciarky(slovo):
     pismena = ""
     for i in range(len(slovo)):
         pismena += " _"
     return pismena
+
 
 def ciarky_premena(hodnota, hodnota2):
     dlzka = len(hodnota)
@@ -58,10 +47,14 @@ def ciarky_premena(hodnota, hodnota2):
             break
     return " ".join(novy)
 
+
 class PaintApp:
     def __init__(self, parent, chat_window, timer_label, points_label, letter_label):
         self.parent = parent
+        self.startButton = startButton
+        self.ip_list = ip_list
         self.chat_window = chat_window
+        self._address = chat_window._address
         self.timer_label = timer_label
         self.points_label = points_label
         self.letter_label = letter_label
@@ -99,11 +92,11 @@ class PaintApp:
         clearButton.grid(row=0, column=5)
 
         # Add word label and button to choose a new word
-        self.word_label = Label(self.holder, text="Vybrané slovo: " + self.hodnota, font=("Arial", 14))
-        self.word_label.grid(row=1, column=0, columnspan=3, pady=10)
+        #self.word_label = Label(self.holder, text="Vybrané slovo: " + self.hodnota, font=("Arial", 14))
+        #self.word_label.grid(row=1, column=0, columnspan=3, pady=10)
 
-        new_word_button = Button(self.holder, text="Vyber nové slovo", height=1, width=12, command=self.update_word)
-        new_word_button.grid(row=1, column=3, columnspan=3, pady=10)
+        #self.new_word_button = Button(self.holder, text="Vyber nové slovo", height=1, width=12, command=self.update_word)
+        #self.new_word_button.grid(row=1, column=3, columnspan=3, pady=10)
 
         self.canvas = Canvas(self.parent, height=450, width=500, bg="white")
         self.canvas.pack(fill=tk.BOTH, expand=True, padx=5, pady=5)
@@ -112,19 +105,32 @@ class PaintApp:
         self.canvas.bind("<ButtonRelease-1>", self.paint)
         self.canvas.bind("<Button-1>", self.paint)
 
-        self.start_delay()
+    def start_hra(self):
+        self.startButton.destroy()
+        self.vyber = "192.168.100.43"
+        if self.vyber == self._address.get():
+            self.drawing_enabled = False
+            self.chat_window.guess_enabled = True
+            self.timer_label.config(text="")
+            #self.word_label.grid_remove()
+            #self.new_word_button.grid_remove()
+        else:
+            self.drawing_enabled = True
+            self.chat_window.guess_enabled = False
+            self.start_delay()
+            #self.word_label.grid_remove()
 
     def start_delay(self):
+        self.drawing_enabled = False
+        tk.messagebox.showinfo("Slovo", self.hodnota)
         self.timer_label.config(text="Čas: 60 s - Hra sa za chvíľu začne")
         self.parent.after(5000, self.start_timer)
         self.clearScreen()
-        self.drawing_enabled = False
-        self.chat_window.guess_enabled = False
 
     def start_timer(self):
         if self.timer_id is not None:
             self.parent.after_cancel(self.timer_id)
-        self.chat_window.guess_enabled = True
+        print(self._address.get())
         self.drawing_enabled = True
         self.timer_seconds = 60
         self.update_timer_label()
@@ -154,7 +160,7 @@ class PaintApp:
     def update_word(self):
         self.hodnota = vyberSlovo()
         self.hodnota2 = ciarky(self.hodnota)
-        self.word_label.config(text="Vybrané slovo: " + self.hodnota)
+        #self.word_label.config(text="Vybrané slovo: " + self.hodnota)
         self.letter_label.config(text="" + self.hodnota2)
         self.clearScreen()
         self.stop_timer()
@@ -204,9 +210,12 @@ class PaintApp:
     def clearScreen(self):
         self.canvas.delete("all")
 
+
 class ChatWindow:
+
     def __init__(self, parent, paint_app):
         self.parent = parent
+        self.ip_list = ip_list
         self.paint_app = paint_app
         self.frame = Frame(self.parent)
         self.frame.pack(fill=tk.BOTH, expand=True, padx=5, pady=5)
@@ -231,17 +240,28 @@ class ChatWindow:
         self._btn_send = Button(input_frame, text="Odoslat", command=self.btn_pressed)
         self._btn_send.pack(side=tk.LEFT, padx=5, pady=5)
 
+        self._btn_connect = Button(input_frame, text="Pripojit", command=self.btn_pressed2)
+        self._btn_connect.pack(side=tk.LEFT, padx=5, pady=5)
+
         self._sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
         self._sock.bind(('0.0.0.0', 20000))
-
         self.periodic()
 
     def periodic(self):
         rx_ev, _, _ = select.select([self._sock], [], [], 0)
         if rx_ev:
             data, address = self._sock.recvfrom(200)
-            if self.guess_enabled:
-                self.add_message(address[0], data.decode())
+            if address[0] not in self.ip_list:
+                self.ip_list.append(address[0])
+            self.add_message(address[0], data.decode())
+            entered_word = data.decode()
+            if entered_word == self.paint_app.hodnota:
+                self._message.delete(0, tk.END)
+                tk.messagebox.showinfo(":)", "Uhadol" + " " + address[0])
+                self.paint_app.update_word()
+                self.paint_app.stop_timer()
+                self.paint_app.start_delay()
+            print(data.decode())
         self.parent.after(1000, self.periodic)
 
     def add_message(self, address, message):
@@ -255,20 +275,19 @@ class ChatWindow:
         message = self._message.get().strip()
         address = self._address.get()
         if address and message:
-            entered_word = message
-            if entered_word == self.paint_app.hodnota:
-                self._message.delete(0, tk.END)
-                messagebox.showinfo(":)", "Uhadol si!")
-                self.paint_app.update_word()
-                self.paint_app.stop_timer()
-                self.paint_app.start_delay()
-
-            else:
-                self._sock.sendto(message.encode(), (address, 20000))
-                self.add_message(address, message)
-                self._message.delete(0, tk.END)
-                return
+            self._sock.sendto(message.encode(), (address, 20000))
+            self.add_message(address, message)
             self._message.delete(0, tk.END)
+            return
+        self._message.delete(0, tk.END)
+
+    def btn_pressed2(self, event=None):
+        address = self._address.get()
+        if address:
+            self._sock.sendto(address.encode(), (address, 20000))
+            self._message.delete(0, tk.END)
+            return
+        self._message.delete(0, tk.END)
 
     def start_guessing_after_delay(self):
         self.guess_enabled = True
@@ -277,7 +296,7 @@ class ChatWindow:
 if __name__ == "__main__":
     root = tk.Tk()
     root.title("MultiApp - Paint and Chat")
-    root.geometry("1100x650")
+    root.geometry("1300x650")
 
     header_frame = Frame(root, height=50, width=1100)
     header_frame.pack(fill=tk.X, padx=5, pady=5)
@@ -289,7 +308,10 @@ if __name__ == "__main__":
     letter_label.pack(side=tk.LEFT, fill=tk.BOTH, expand=True, pady=5)
 
     points_label = Label(header_frame, text="100 BODOV", font=("Arial", 20))
-    points_label.pack(anchor="center", padx=5, pady=5)
+    points_label.pack(side = tk.RIGHT, padx=5, pady=5)
+
+    startButton = Button(header_frame, text="START", height=1, width=12)
+    startButton.pack(side=tk.RIGHT, padx=5, pady=5)
 
     body_frame = Frame(root)
     body_frame.pack(fill=tk.BOTH, expand=True)
@@ -301,7 +323,10 @@ if __name__ == "__main__":
     chat_frame.pack(side=tk.RIGHT, fill=tk.BOTH, expand=True, padx=5, pady=5)
 
     chat_window = ChatWindow(chat_frame, None)  # Pass None for paint_app for now
-    paint_app = PaintApp(paint_frame, chat_window, timer_label, points_label, letter_label)  # Now chat_window is defined, so you can pass it to PaintApp
+    paint_app = PaintApp(paint_frame, chat_window, timer_label, points_label, letter_label)
+    # Now chat_window is defined, so you can pass it to PaintApp
+    startButton.config(command=paint_app.start_hra)
+
     chat_window.paint_app = paint_app
 
     root.mainloop()
