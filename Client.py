@@ -92,11 +92,11 @@ class PaintApp:
         clearButton.grid(row=0, column=5)
 
         # Add word label and button to choose a new word
-        self.word_label = Label(self.holder, text="Vybrané slovo: " + self.hodnota, font=("Arial", 14))
-        self.word_label.grid(row=1, column=0, columnspan=3, pady=10)
+        #self.word_label = Label(self.holder, text="Vybrané slovo: " + self.hodnota, font=("Arial", 14))
+        #self.word_label.grid(row=1, column=0, columnspan=3, pady=10)
 
-        new_word_button = Button(self.holder, text="Vyber nové slovo", height=1, width=12, command=self.update_word)
-        new_word_button.grid(row=1, column=3, columnspan=3, pady=10)
+        #self.new_word_button = Button(self.holder, text="Vyber nové slovo", height=1, width=12, command=self.update_word)
+        #self.new_word_button.grid(row=1, column=3, columnspan=3, pady=10)
 
         self.canvas = Canvas(self.parent, height=450, width=500, bg="white")
         self.canvas.pack(fill=tk.BOTH, expand=True, padx=5, pady=5)
@@ -107,18 +107,22 @@ class PaintApp:
 
     def start_hra(self):
         self.startButton.destroy()
-        self.vyber = "192.168.1.215"
-        if self.vyber != self._address.get():
+        self.vyber = "192.168.100.43"
+        if self.vyber == self._address.get():
             self.drawing_enabled = False
             self.chat_window.guess_enabled = True
-            self.timer_label.config(text = "")
+            self.timer_label.config(text="")
+            #self.word_label.grid_remove()
+            #self.new_word_button.grid_remove()
         else:
             self.drawing_enabled = True
-            self.chat_window.guess_enabled = False
+            self.chat_window.guess_enabled = True
             self.start_delay()
+            #self.word_label.grid_remove()
 
     def start_delay(self):
         self.drawing_enabled = False
+        tk.messagebox.showinfo("Slovo", self.hodnota)
         self.timer_label.config(text="Čas: 60 s - Hra sa za chvíľu začne")
         self.parent.after(5000, self.start_timer)
         self.clearScreen()
@@ -156,7 +160,7 @@ class PaintApp:
     def update_word(self):
         self.hodnota = vyberSlovo()
         self.hodnota2 = ciarky(self.hodnota)
-        self.word_label.config(text="Vybrané slovo: " + self.hodnota)
+        #self.word_label.config(text="Vybrané slovo: " + self.hodnota)
         self.letter_label.config(text="" + self.hodnota2)
         self.clearScreen()
         self.stop_timer()
@@ -224,7 +228,7 @@ class ChatWindow:
         input_frame.pack(fill=tk.X)
 
         self._address = tk.Entry(input_frame)
-        self._address.insert(0, '127.0.0.1')
+        self._address.insert(0, '192.168.100.85')
         self._address.pack(side=tk.LEFT, padx=5, pady=5)
         self._address.config(width=12)
 
@@ -256,7 +260,7 @@ class ChatWindow:
                 tk.messagebox.showinfo(":)", "Uhadol" + " " + address[0])
                 self.paint_app.update_word()
                 self.paint_app.stop_timer()
-                self.paint_app.start_delay()
+                #self.paint_app.start_delay()
             print(data.decode())
         self.parent.after(1000, self.periodic)
 
