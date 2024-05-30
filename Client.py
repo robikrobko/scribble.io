@@ -6,7 +6,7 @@ import socket
 import select
 import datetime
 
-ip_lits = []
+ip_list = []
 
 
 def vyberSlovo():
@@ -25,29 +25,9 @@ def vyberSlovo():
              "papagáj", "kanár", "holub", "sokol", "orol", "kondor", "sliepka", "kačica",
              "hus", "labuť", "čajka", "sova", "straka", "kos", "vážka", "motýľ", "chrobák",
              "komár", "osádka", "včela", "medováčik", "pčela", "bumbar", "motýlik", "hmyz",
-             "krava", "dážď", "mraz", "vietor", "jeseň", "zima", "zima", "jeseň", "leto",
-             "jaro", "teplota", "horúčava", "studený", "chladný", "mrazivý", "teplo", "teplý",
-             "príjemný", "nepríjemný", "krásny", "škaredý", "šťastný", "smutný", "veselý",
-             "úbohý", "bohatý", "vzácny", "bezný", "slávny", "neznámy", "známy", "rovný",
-             "krivý", "síriť", "zúžiť", "rozšíriť", "skrátiť", "predĺžiť", "zvýšiť", "znížiť",
-             "rásť", "klesať", "strmý", "mierny", "prudký", "rovný", "vlnitý", "horký", "studený",
-             "teplý", "chladný", "jasný", "zatiahnutý", "slnečný", "zamračený", "dážď", "sneh",
-             "vietor", "búrka", "búrlivý", "tichý", "hučanie", "šum", "vlnenie", "vánok", "víchrica",
-             "váľanie", "hrčenie", "driapavka", "chrčenie", "rachot", "štekot", "vybuchnutie",
-             "prasknutie", "šumivý", "klokotavý", "plápolavý", "pleskotavý", "ťukotavý", "šepotavý",
-             "krikľavý", "hučiavý", "vrčavý", "hrčavý", "driapavý", "kráčavý", "šepotavý", "plášť",
-             "šatka", "tričko", "blúzka", "šaty", "sukňa", "nohavice", "šortky", "pančuchy", "ponožky",
-             "topánky", "topánky", "čižmy", "šľapky", "tenisky", "kabelka", "taška", "aktovka", "pekárna",
-             "cukráreň", "potraviny", "obuv", "oblečenie", "obuvník", "odkaz", "oznámenie", "poznámka",
-             "správa", "správa", "zpráva", "email", "komentár", "dopis", "list", "článok", "článok",
-             "noviny", "noviny", "časopis", "časopis", "bulletin", "bulletin", "plán", "plán", "návrh",
-             "návrh", "projekt", "projekt", "program", "program", "agenda", "agenda", "úloha", "úloha",
-             "cvičenie"]
+             "krava", "dážď", "mraz", "vietor", "jeseň", "zima", "zima", "jeseň", "leto"]
     current_word = random.choice(words)
     return current_word
-
-
-
 
 
 def ciarky(slovo):
@@ -70,7 +50,7 @@ class PaintApp:
     def __init__(self, parent, chat_window, timer_label, points_label, letter_label):
         self.parent = parent
         self.startButton = startButton
-        self.ip_list = ip_lits
+        self.ip_list = ip_list
         self.chat_window = chat_window
         self._address = chat_window._address
         self.timer_label = timer_label
@@ -231,7 +211,7 @@ class ChatWindow:
 
     def __init__(self, parent, paint_app):
         self.parent = parent
-        self.ip_list = ip_lits
+        self.ip_list = ip_list
         self.paint_app = paint_app
         self.frame = Frame(self.parent)
         self.frame.pack(fill=tk.BOTH, expand=True, padx=5, pady=5)
