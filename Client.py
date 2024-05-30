@@ -36,6 +36,7 @@ def ciarky(slovo):
         pismena += " _"
     return pismena
 
+
 def ciarky_premena(hodnota, hodnota2):
     dlzka = len(hodnota)
     novy = list(hodnota2.replace(" ", ""))
@@ -45,6 +46,7 @@ def ciarky_premena(hodnota, hodnota2):
             novy[vyber] = hodnota[vyber]
             break
     return " ".join(novy)
+
 
 class PaintApp:
     def __init__(self, parent, chat_window, timer_label, points_label, letter_label):
@@ -66,7 +68,6 @@ class PaintApp:
         self.drawing_enabled = False
         self.setup_ui()
         self.timer_id = None
-
 
     def setup_ui(self):
         self.holder = Frame(self.parent, height=120, width=500, bg="white", padx=100, pady=10)
@@ -116,8 +117,8 @@ class PaintApp:
             self.chat_window.guess_enabled = False
             self.start_delay()
 
-
     def start_delay(self):
+        self.drawing_enabled = False
         self.timer_label.config(text="Čas: 60 s - Hra sa za chvíľu začne")
         self.parent.after(5000, self.start_timer)
         self.clearScreen()
@@ -126,6 +127,7 @@ class PaintApp:
         if self.timer_id is not None:
             self.parent.after_cancel(self.timer_id)
         print(self._address.get())
+        self.drawing_enabled = True
         self.timer_seconds = 60
         self.update_timer_label()
 
@@ -159,9 +161,6 @@ class PaintApp:
         self.clearScreen()
         self.stop_timer()
         self.start_delay()
-
-
-
 
     def strokeI(self):
         if self.stroke != 10:
@@ -207,6 +206,7 @@ class PaintApp:
     def clearScreen(self):
         self.canvas.delete("all")
 
+
 class ChatWindow:
 
     def __init__(self, parent, paint_app):
@@ -216,7 +216,6 @@ class ChatWindow:
         self.frame = Frame(self.parent)
         self.frame.pack(fill=tk.BOTH, expand=True, padx=5, pady=5)
         self.guess_enabled = False
-
 
         self.listbox = tk.Listbox(self.frame)
         self.listbox.pack(fill=tk.BOTH, expand=True)
@@ -237,15 +236,12 @@ class ChatWindow:
         self._btn_send = Button(input_frame, text="Odoslat", command=self.btn_pressed)
         self._btn_send.pack(side=tk.LEFT, padx=5, pady=5)
 
-        self._btn_connect = Button(input_frame, text = "Pripojit", command= self.btn_pressed2)
-        self._btn_connect.pack(side = tk.LEFT, padx= 5, pady = 5)
+        self._btn_connect = Button(input_frame, text="Pripojit", command=self.btn_pressed2)
+        self._btn_connect.pack(side=tk.LEFT, padx=5, pady=5)
 
         self._sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
         self._sock.bind(('0.0.0.0', 20000))
         self.periodic()
-
-
-
 
     def periodic(self):
         rx_ev, _, _ = select.select([self._sock], [], [], 0)
@@ -292,6 +288,7 @@ class ChatWindow:
     def start_guessing_after_delay(self):
         self.guess_enabled = True
 
+
 if __name__ == "__main__":
     root = tk.Tk()
     root.title("MultiApp - Paint and Chat")
@@ -321,12 +318,9 @@ if __name__ == "__main__":
     chat_frame = Frame(body_frame, width=550, bg="white")
     chat_frame.pack(side=tk.RIGHT, fill=tk.BOTH, expand=True, padx=5, pady=5)
 
-
-
-
     chat_window = ChatWindow(chat_frame, None)  # Pass None for paint_app for now
     paint_app = PaintApp(paint_frame, chat_window, timer_label, points_label, letter_label)
-      # Now chat_window is defined, so you can pass it to PaintApp
+    # Now chat_window is defined, so you can pass it to PaintApp
     startButton.config(command=paint_app.start_hra)
 
     chat_window.paint_app = paint_app
