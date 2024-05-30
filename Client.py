@@ -73,7 +73,6 @@ class PaintApp:
         self.ip_list = ip_lits
         self.chat_window = chat_window
         self._address = chat_window._address
-        self.vyber_hracov = chat_window.vyber_hracov
         self.timer_label = timer_label
         self.points_label = points_label
         self.letter_label = letter_label
@@ -126,25 +125,27 @@ class PaintApp:
         self.canvas.bind("<Button-1>", self.paint)
 
     def start_hra(self):
-        self.start_delay()
         self.startButton.destroy()
+        self.vyber = "192.168.1.215"
+        if self.vyber != self._address.get():
+            self.drawing_enabled = False
+            self.chat_window.guess_enabled = True
+            self.timer_label.config(text = "")
+        else:
+            self.drawing_enabled = True
+            self.chat_window.guess_enabled = False
+            self.start_delay()
+
 
     def start_delay(self):
         self.timer_label.config(text="Čas: 60 s - Hra sa za chvíľu začne")
         self.parent.after(5000, self.start_timer)
         self.clearScreen()
-        self.drawing_enabled = False
-        self.chat_window.guess_enabled = False
 
     def start_timer(self):
-        vyber = self.vyber_hraca()
         if self.timer_id is not None:
             self.parent.after_cancel(self.timer_id)
-        if vyber != self._address.get():
-            self.chat_window.guess_enabled = True
         print(self._address.get())
-        if vyber == self._address.get():
-            self.drawing_enabled = True
         self.timer_seconds = 60
         self.update_timer_label()
 
@@ -179,15 +180,7 @@ class PaintApp:
         self.stop_timer()
         self.start_delay()
 
-    def vyber_hraca(self):
-        if not self.vyber_hracov:
-            messagebox.showinfo("Koniec kola", "koniec kola")
-            return None
 
-        print(self.vyber_hracov)
-        hrac = random.choice(self.vyber_hracov)  # Choose a random player
-        self.vyber_hracov.remove(hrac)  # Remove the chosen player from the list
-        return hrac
 
 
     def strokeI(self):
@@ -243,7 +236,7 @@ class ChatWindow:
         self.frame = Frame(self.parent)
         self.frame.pack(fill=tk.BOTH, expand=True, padx=5, pady=5)
         self.guess_enabled = False
-        self.vyber_hracov = []
+
 
         self.listbox = tk.Listbox(self.frame)
         self.listbox.pack(fill=tk.BOTH, expand=True)
@@ -280,10 +273,15 @@ class ChatWindow:
             data, address = self._sock.recvfrom(200)
             if address[0] not in self.ip_list:
                 self.ip_list.append(address[0])
-
-                self.vyber_hracov.append(address[0])
-                print(self.vyber_hracov)
             self.add_message(address[0], data.decode())
+            entered_word = data.decode()
+            if entered_word == self.paint_app.hodnota:
+                self._message.delete(0, tk.END)
+                tk.messagebox.showinfo(":)", "Uhadol" + " " + address[0])
+                self.paint_app.update_word()
+                self.paint_app.stop_timer()
+                self.paint_app.start_delay()
+            print(data.decode())
         self.parent.after(1000, self.periodic)
 
     def add_message(self, address, message):
@@ -297,19 +295,11 @@ class ChatWindow:
         message = self._message.get().strip()
         address = self._address.get()
         if address and message:
-            entered_word = message
-            if entered_word == self.paint_app.hodnota:
-                self._message.delete(0, tk.END)
-                tk.messagebox.showinfo(":)", "Uhadol si!")
-                self.paint_app.update_word()
-                self.paint_app.stop_timer()
-                self.paint_app.start_delay()
-            else:
-                self._sock.sendto(message.encode(), (address, 20000))
-                self.add_message(address, message)
-                self._message.delete(0, tk.END)
-                return
+            self._sock.sendto(message.encode(), (address, 20000))
+            self.add_message(address, message)
             self._message.delete(0, tk.END)
+            return
+        self._message.delete(0, tk.END)
 
     def btn_pressed2(self, event=None):
         address = self._address.get()
