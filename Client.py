@@ -68,6 +68,7 @@ class PaintApp:
         self.drawing_enabled = False
         self.setup_ui()
         self.timer_id = None
+        self.random_premenna = 1
 
     def setup_ui(self):
         self.holder = Frame(self.parent, height=120, width=500, bg="white", padx=100, pady=10)
@@ -122,10 +123,16 @@ class PaintApp:
 
     def start_delay(self):
         self.drawing_enabled = False
-        tk.messagebox.showinfo("Slovo", self.hodnota)
-        self.timer_label.config(text="Čas: 60 s - Hra sa za chvíľu začne")
-        self.parent.after(5000, self.start_timer)
-        self.clearScreen()
+        if self.random_premenna == 1:
+            tk.messagebox.showinfo("Slovo", self.hodnota)
+            self.random_premenna = 2
+            self.timer_label.config(text="Čas: 60 s - Hra sa za chvíľu začne")
+            self.parent.after(5000, self.start_timer)
+            self.clearScreen()
+        else:
+            self.timer_label.config(text="Čas: 60 s - Hra sa za chvíľu začne")
+            self.parent.after(5000, self.start_timer)
+            self.clearScreen()
 
     def start_timer(self):
         if self.timer_id is not None:
@@ -147,6 +154,7 @@ class PaintApp:
             self.timer_id = None
             messagebox.showinfo("Koniec času", "Čas vypršal!")
             self.start_delay()
+            tk.messagebox.showinfo("Slovo", self.hodnota)
             self.update_word()
             if self.timer_seconds == 39 or self.timer_seconds == 19:
                 self.hodnota2 = ciarky_premena(self.hodnota, self.hodnota2)
