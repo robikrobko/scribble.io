@@ -107,7 +107,7 @@ class PaintApp:
 
     def start_hra(self):
         self.startButton.destroy()
-        self.vyber = "192.168.100.43"
+        self.vyber = "192.168.68.106"
         if self.vyber == self._address.get():
             self.drawing_enabled = False
             self.chat_window.guess_enabled = True
@@ -230,7 +230,7 @@ class ChatWindow:
         entry_font = font.Font(font=("Montserrat"))
 
         self._address = tk.Entry(input_frame, font=entry_font)
-        self._address.insert(0, '192.168.100.85')
+        self._address.insert(0, '192.168.68.104')
         self._address.pack(side=tk.LEFT, padx=5, pady=5)
         self._address.config(width=11)
 
@@ -293,6 +293,20 @@ class ChatWindow:
 
     def start_guessing_after_delay(self):
         self.guess_enabled = True
+
+def point_system(num_players, total_points):
+    points = []
+    remaining_points = total_points
+    for i in range(1, num_players + 1):
+        player_points = int(total_points * (1 / i))
+        player_points = min(player_points, remaining_points)
+        remaining_points -= player_points
+        points.append(player_points)
+    return points
+
+total_points = 1000
+num_players_connected = len(ip_list)
+points_distribution = point_system(num_players_connected, total_points)
 
 
 if __name__ == "__main__":
