@@ -13,6 +13,8 @@ def open_microsoft_store():
 
     webbrowser.open(url)
 
+def open_google_fonts():
+    url2 = "https://fonts.google.com/selection?query=Mont"
 
 if sys.version_info < (3, 12, 2):
     messagebox.showerror("Python Version Error", "Python 3.12.2 or later is required to run this game. Please download and install Python 3.12.2 from the official Python website.")
@@ -33,6 +35,7 @@ root = tk.Tk()
 
 if not check_font():
     messagebox.showinfo("Font Missing", "The 'Montserrat' font is required to run this game. Please download and install the 'Montserrat' font before running the game.")
+    open_google_fonts()
     root.destroy()
 else:
     root.destroy()
