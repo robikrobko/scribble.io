@@ -230,7 +230,7 @@ class ChatWindow:
         entry_font = font.Font(font=("Montserrat"))
 
         self._address = tk.Entry(input_frame, font=entry_font)
-        self._address.insert(0, '192.168.68.104')
+        self._address.insert(0, '192.168.68.106')
         self._address.pack(side=tk.LEFT, padx=5, pady=5)
         self._address.config(width=11)
 
