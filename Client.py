@@ -107,7 +107,7 @@ class PaintApp:
         self.points_history = {}
 
     def setup_ui(self):
-        self.holder = Frame(self.parent, height=120, width=500, bg="white", padx=100, pady=10)
+        self.holder = Frame(self.parent, height=120, width=500, bg="dark gray", padx=100, pady=10)
         self.holder.pack(fill=tk.X, padx=5, pady=5)
 
         pencilButton = Button(self.holder, text="Pero", height=1, width=12, command=self.pencil, font=("Montserrat", 9))
@@ -265,6 +265,8 @@ class PaintApp:
 class ChatWindow:
 
     def __init__(self, parent, paint_app):
+        entry_font = font.Font(font=("Montserrat"))
+
         self.parent = parent
         self.ip_list = ip_list
         self.paint_app = paint_app
@@ -272,13 +274,11 @@ class ChatWindow:
         self.frame.pack(fill=tk.BOTH, expand=True, padx=5, pady=5)
         self.guess_enabled = False
 
-        self.listbox = tk.Listbox(self.frame, font=("Montserrat"))
+        self.listbox = tk.Listbox(self.frame, font=entry_font)
         self.listbox.pack(fill=tk.BOTH, expand=True)
 
         input_frame = Frame(self.frame)
         input_frame.pack(fill=tk.X)
-
-        entry_font = font.Font(font=("Montserrat"))
 
         self._address = tk.Entry(input_frame, font=entry_font)
         self._address.insert(0, '192.168.68.104')
@@ -380,10 +380,10 @@ if __name__ == "__main__":
     startButton = Button(header_frame, text="START", height=1, width=12, font=("Montserrat", 15))
     startButton.pack(side=tk.RIGHT, padx=5, pady=5)
 
-    body_frame = Frame(root)
+    body_frame = Frame(root, bg="dark gray")
     body_frame.pack(fill=tk.BOTH, expand=True)
 
-    paint_frame = Frame(body_frame, width=550, bg="light grey")
+    paint_frame = Frame(body_frame, width=550, bg="dark gray")
     paint_frame.pack(side=tk.LEFT, fill=tk.BOTH, expand=True, padx=5, pady=5)
 
     chat_frame = Frame(body_frame, width=550, bg="white")
