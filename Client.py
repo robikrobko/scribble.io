@@ -1,7 +1,7 @@
 import random
 import tkinter as tk
 from socket import socket
-from tkinter import Frame, Canvas, Button, Label, colorchooser, messagebox
+from tkinter import Frame, Canvas, Button, Label, colorchooser, messagebox, font
 import socket
 import select
 import datetime
@@ -73,22 +73,22 @@ class PaintApp:
         self.holder = Frame(self.parent, height=120, width=500, bg="white", padx=100, pady=10)
         self.holder.pack(fill=tk.X, padx=5, pady=5)
 
-        pencilButton = Button(self.holder, text="Pero", height=1, width=12, command=self.pencil)
+        pencilButton = Button(self.holder, text="Pero", height=1, width=12, command=self.pencil, font=("Montserrat", 9))
         pencilButton.grid(row=0, column=0)
 
-        eraserButton = Button(self.holder, text="Guma", height=1, width=12, command=self.eraser)
+        eraserButton = Button(self.holder, text="Guma", height=1, width=12, command=self.eraser, font=("Montserrat", 9))
         eraserButton.grid(row=0, column=1)
 
-        colorButton = Button(self.holder, text="Vyber Farbu", height=1, width=12, command=self.colorChoice)
+        colorButton = Button(self.holder, text="Vyber Farbu", height=1, width=12, command=self.colorChoice, font=("Montserrat", 9))
         colorButton.grid(row=0, column=2)
 
-        sizeiButton = Button(self.holder, text="Hrubka +", height=1, width=12, command=self.strokeI)
+        sizeiButton = Button(self.holder, text="Hrubka +", height=1, width=12, command=self.strokeI, font=("Montserrat", 9))
         sizeiButton.grid(row=0, column=3)
 
-        sizedButton = Button(self.holder, text="Hrubka -", height=1, width=12, command=self.strokeD)
+        sizedButton = Button(self.holder, text="Hrubka -", height=1, width=12, command=self.strokeD, font=("Montserrat", 9))
         sizedButton.grid(row=0, column=4)
 
-        clearButton = Button(self.holder, text="Vymazat", height=1, width=12, command=self.clearScreen)
+        clearButton = Button(self.holder, text="Vymazat", height=1, width=12, command=self.clearScreen, font=("Montserrat", 9))
         clearButton.grid(row=0, column=5)
 
         # Add word label and button to choose a new word
@@ -221,26 +221,28 @@ class ChatWindow:
         self.frame.pack(fill=tk.BOTH, expand=True, padx=5, pady=5)
         self.guess_enabled = False
 
-        self.listbox = tk.Listbox(self.frame)
+        self.listbox = tk.Listbox(self.frame, font=("Montserrat"))
         self.listbox.pack(fill=tk.BOTH, expand=True)
 
         input_frame = Frame(self.frame)
         input_frame.pack(fill=tk.X)
 
-        self._address = tk.Entry(input_frame)
+        entry_font = font.Font(font=("Montserrat"))
+
+        self._address = tk.Entry(input_frame, font=entry_font)
         self._address.insert(0, '192.168.100.85')
         self._address.pack(side=tk.LEFT, padx=5, pady=5)
-        self._address.config(width=12)
+        self._address.config(width=10)
 
-        self._message = tk.Entry(input_frame)
+        self._message = tk.Entry(input_frame, font=entry_font)
         self._message.insert(0, '')
         self._message.pack(side=tk.LEFT, fill=tk.X, expand=True, padx=5, pady=5)
         self._message.bind("<Return>", self.btn_pressed)
 
-        self._btn_send = Button(input_frame, text="Odoslat", command=self.btn_pressed)
+        self._btn_send = Button(input_frame, text="Odoslat", command=self.btn_pressed, font=("Montserrat", 9))
         self._btn_send.pack(side=tk.LEFT, padx=5, pady=5)
 
-        self._btn_connect = Button(input_frame, text="Pripojit", command=self.btn_pressed2)
+        self._btn_connect = Button(input_frame, text="Pripojit", command=self.btn_pressed2, font=("Montserrat", 9))
         self._btn_connect.pack(side=tk.LEFT, padx=5, pady=5)
 
         self._sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
@@ -301,22 +303,22 @@ if __name__ == "__main__":
     header_frame = Frame(root, height=50, width=1100)
     header_frame.pack(fill=tk.X, padx=5, pady=5)
 
-    timer_label = Label(header_frame, text="Čas: 60 s", font=("Arial", 20))
+    timer_label = Label(header_frame, text="Čas: 60 s", font=("Montserrat", 15))
     timer_label.pack(side=tk.LEFT, padx=5, pady=5)
 
-    letter_label = Label(header_frame, text=ciarky(vyberSlovo()), font=("Arial", 20))
+    letter_label = Label(header_frame, text=ciarky(vyberSlovo()), font=("Montserrat", 15))
     letter_label.pack(side=tk.LEFT, fill=tk.BOTH, expand=True, pady=5)
 
-    points_label = Label(header_frame, text="100 BODOV", font=("Arial", 20))
+    points_label = Label(header_frame, text="100 BODOV", font=("Montserrat", 15))
     points_label.pack(side = tk.RIGHT, padx=5, pady=5)
 
-    startButton = Button(header_frame, text="START", height=1, width=12)
+    startButton = Button(header_frame, text="START", height=1, width=12, font=("Montserrat", 15))
     startButton.pack(side=tk.RIGHT, padx=5, pady=5)
 
     body_frame = Frame(root)
     body_frame.pack(fill=tk.BOTH, expand=True)
 
-    paint_frame = Frame(body_frame, width=550, bg="gray")
+    paint_frame = Frame(body_frame, width=550, bg="light grey")
     paint_frame.pack(side=tk.LEFT, fill=tk.BOTH, expand=True, padx=5, pady=5)
 
     chat_frame = Frame(body_frame, width=550, bg="white")
