@@ -6,9 +6,19 @@ import socket
 import select
 import datetime
 import sys
+import webbrowser
+
+def open_microsoft_store():
+    url = "ms-windows-store://pdp/?PFN=PythonSoftwareFoundation.Python.312_qbz5n2kfra8p0"
+
+    webbrowser.open(url)
+
 
 if sys.version_info < (3, 12, 2):
     messagebox.showerror("Python Version Error", "Python 3.12.2 or later is required to run this game. Please download and install Python 3.12.2 from the official Python website.")
+    
+    open_microsoft_store()
+
     sys.exit(1)
 
 
@@ -27,7 +37,7 @@ if not check_font():
 else:
     root.destroy()
 
-    
+
 ip_list = []
 
 
