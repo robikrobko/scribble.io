@@ -5,7 +5,29 @@ from tkinter import Frame, Canvas, Button, Label, colorchooser, messagebox, font
 import socket
 import select
 import datetime
+import sys
 
+if sys.version_info < (3, 12, 2):
+    messagebox.showerror("Python Version Error", "Python 3.12.2 or later is required to run this game. Please download and install Python 3.12.2 from the official Python website.")
+    sys.exit(1)
+
+
+def check_font():
+    try:
+        tk.Label(text="Test", font=("Montserrat", 12)).pack()
+    except tk.TclError:
+        return False
+    return True
+    
+root = tk.Tk()
+
+if not check_font():
+    messagebox.showinfo("Font Missing", "The 'Montserrat' font is required to run this game. Please download and install the 'Montserrat' font before running the game.")
+    root.destroy()
+else:
+    root.destroy()
+
+    
 ip_list = []
 
 
@@ -15,17 +37,17 @@ def vyberSlovo():
              "hudba", "film", "rastlina", "stol", "okno", "dvere", "lopta", "hudba",
              "detska izba", "obchod", "trh", "obrazok", "fotografia", "krajina", "voda",
              "ocean", "rieka", "jazero", "plaz", "lod", "lietadlo", "vlak",
-             "hory", "zima", "jesen", "jar", "leto", "mracno", "dážď",
-             "sneh", "vietor", "mráz", "teplota", "krajina", "poľnohospodárstvo", "lesníctvo",
-             "zvieratá", "pes", "mačka", "vták", "ryba", "sliepka", "krava", "ovca", "kôza",
-             "koník", "žirafa", "lev", "tiger", "slon", "medveď", "vlk", "čajka", "sova",
-             "papagáj", "korytnačka", "krokodíl", "hady", "zajac", "myš", "hadica", "motýľ",
-             "včela", "mravce", "škorpión", "mravčiar", "slon", "žirafa", "tiger", "jazvec",
-             "gorila", "orangutan", "šimpanz", "delfín", "veľryba", "tučniak", "pingvin",
-             "papagáj", "kanár", "holub", "sokol", "orol", "kondor", "sliepka", "kačica",
-             "hus", "labuť", "čajka", "sova", "straka", "kos", "vážka", "motýľ", "chrobák",
-             "komár", "osádka", "včela", "medováčik", "pčela", "bumbar", "motýlik", "hmyz",
-             "krava", "dážď", "mraz", "vietor", "jeseň", "zima", "zima", "jeseň", "leto"]
+             "hory", "zima", "jesen", "jar", "leto", "mracno", "dazd",
+             "sneh", "vietor", "mraz", "teplota", "krajina", "polnohospodarstvo", "lesnicstvo",
+             "zvierata", "pes", "macka", "vtak", "ryba", "sliepka", "krava", "ovca", "koza",
+             "konik", "zirafa", "lev", "tiger", "slon", "medved", "vlk", "cajka", "sova",
+             "papagaj", "korytnacka", "krokodil", "hady", "zajac", "mys", "hadica", "motyl",
+             "vcela", "mravce", "skorpion", "mravciar", "slon", "zirafa", "tiger", "jazvec",
+             "gorila", "orangutan", "simpanz", "delfin", "velryba", "tucniak", "pingvin",
+             "papagaj", "kanar", "holub", "sokol", "orol", "kondor", "sliepka", "kacica",
+             "hus", "labut", "cajka", "sova", "straka", "kos", "vazka", "motyl", "chrobak",
+             "komar", "osadka", "vcela", "medovacik", "pcela", "bumbar", "motylik", "hmyz",
+             "krava", "dazd", "mraz", "vietor", "jesen", "zima", "zima", "jesen", "leto"]
     current_word = random.choice(words)
     return current_word
 
@@ -68,6 +90,10 @@ class PaintApp:
         self.drawing_enabled = False
         self.setup_ui()
         self.timer_id = None
+        self.round = 1
+        self.total_rounds = 5
+        self.points_per_round = 1000
+        self.points_history = {}
 
     def setup_ui(self):
         self.holder = Frame(self.parent, height=120, width=500, bg="white", padx=100, pady=10)
@@ -165,6 +191,20 @@ class PaintApp:
         self.clearScreen()
         self.stop_timer()
         self.start_delay()
+        self.round += 1
+        if self.round > self.total_rounds:
+            self.end_game()
+
+    def end_game(self):
+        # Determine the winner and display the winner and total points
+        winner, winner_points = self.determine_winner()
+        messagebox.showinfo("End of Game", f"The winner is: {winner} with {winner_points} points!")
+
+    def determine_winner(self):
+        # Determine the player with the highest total points
+        max_points = max(self.points_history.values())
+        winner = [player for player, points in self.points_history.items() if points == max_points][0]
+        return winner, max_points
 
     def strokeI(self):
         if self.stroke != 10:
@@ -230,7 +270,7 @@ class ChatWindow:
         entry_font = font.Font(font=("Montserrat"))
 
         self._address = tk.Entry(input_frame, font=entry_font)
-        self._address.insert(0, '192.168.68.106')
+        self._address.insert(0, '192.168.68.104')
         self._address.pack(side=tk.LEFT, padx=5, pady=5)
         self._address.config(width=11)
 
