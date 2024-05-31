@@ -36,8 +36,7 @@ root = tk.Tk()
 if not check_font():
     messagebox.showinfo("Font Missing", "The 'Montserrat' font is required to run this game. Please download and install the 'Montserrat' font before running the game.")
     open_google_fonts()
-    root.destroy()
-
+    exit()
 
 ip_list = []
 
