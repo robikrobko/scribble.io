@@ -232,7 +232,7 @@ class ChatWindow:
         self._address = tk.Entry(input_frame, font=entry_font)
         self._address.insert(0, '192.168.100.85')
         self._address.pack(side=tk.LEFT, padx=5, pady=5)
-        self._address.config(width=10)
+        self._address.config(width=11)
 
         self._message = tk.Entry(input_frame, font=entry_font)
         self._message.insert(0, '')
@@ -298,7 +298,7 @@ class ChatWindow:
 if __name__ == "__main__":
     root = tk.Tk()
     root.title("MultiApp - Paint and Chat")
-    root.geometry("1300x650")
+    root.geometry("1400x650")
 
     header_frame = Frame(root, height=50, width=1100)
     header_frame.pack(fill=tk.X, padx=5, pady=5)
