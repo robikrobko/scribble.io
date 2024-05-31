@@ -37,8 +37,6 @@ if not check_font():
     messagebox.showinfo("Font Missing", "The 'Montserrat' font is required to run this game. Please download and install the 'Montserrat' font before running the game.")
     open_google_fonts()
     root.destroy()
-else:
-    root.destroy()
 
 
 ip_list = []
