@@ -9,7 +9,7 @@ import sys
 import webbrowser
 
 def open_microsoft_store():
-    url = "ms-windows-store://pdp/?PFN=PythonSoftwareFoundation.Python.312_qbz5n2kfra8p0"
+    url = "https://www.microsoft.com/store/productId/9NCVDN91XZQP?ocid=pdpshare"
 
     webbrowser.open(url)
 
