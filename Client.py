@@ -331,4 +331,5 @@ if __name__ == "__main__":
 
     chat_window.paint_app = paint_app
 
+    root.resizable(False, False)
     root.mainloop()
