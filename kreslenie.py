@@ -27,7 +27,7 @@ stroke = 1
 
 canvas_data = []
 
-slovicka = ["slnko", "dom", "mrak", "cestoviny", "jablko", "kava", "stol", "clovek", "python", "programator", "server"]
+slovicka = ["slnko", "dom", "mrak", "cestoviny", "jablko", "kava", "stol", "clovek", "python", "programator", "server", "caj"]
 generator = random.choice(slovicka)
 
 
