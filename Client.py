@@ -38,6 +38,7 @@ if not check_font():
     open_google_fonts()
     exit()
 
+
 ip_list = []
 
 
