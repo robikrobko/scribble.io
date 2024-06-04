@@ -137,6 +137,9 @@ class PaintApp:
                              font=("Montserrat", 9))
         clearButton.grid(row=0, column=5)
 
+        self.thicknessLabel = Label(self.holder, text=f"Hrubka: {self.stroke}", height=1, width=12)
+        self.thicknessLabel.grid(row=0, column=6)
+
         # Add word label and button to choose a new word
         # self.word_label = Label(self.holder, text="Vybrané slovo: " + self.hodnota, font=("Arial", 14))
         # self.word_label.grid(row=1, column=0, columnspan=3, pady=10)
@@ -216,12 +219,10 @@ class PaintApp:
             self.end_game()
 
     def end_game(self):
-        # Determine the winner and display the winner and total points
         winner, winner_points = self.determine_winner()
         messagebox.showinfo("End of Game", f"The winner is: {winner} with {winner_points} points!")
 
     def determine_winner(self):
-        # Determine the player with the highest total points
         max_points = max(self.points_history.values())
         winner = [player for player, points in self.points_history.items() if points == max_points][0]
         return winner, max_points
@@ -229,10 +230,12 @@ class PaintApp:
     def strokeI(self):
         if self.stroke != 10:
             self.stroke += 1
+        self.update_thickness_label()
 
     def strokeD(self):
         if self.stroke != 1:
             self.stroke -= 1
+        self.update_thickness_label()
 
     def pencil(self):
         self.penColor = "black"
@@ -270,6 +273,8 @@ class PaintApp:
     def clearScreen(self):
         self.canvas.delete("all")
 
+    def update_thickness_label(self):
+        self.thicknessLabel.config(text=f"Hrubka: {self.stroke}")
 
 class ChatWindow:
 
