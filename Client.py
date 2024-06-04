@@ -134,7 +134,7 @@ class PaintApp:
         sizedButton.grid(row=0, column=4)
 
         clearButton = Button(self.holder, text="Vymazat", height=1, width=12, command=self.clearScreen,
-                             font=("Montserrat", 9))
+                             font=("Montserrat", 9, "bold"), bg="red", fg="white")
         clearButton.grid(row=0, column=5)
 
         self.thicknessLabel = Label(self.holder, text=f"Hrubka: {self.stroke}", height=1, width=12)
@@ -392,7 +392,7 @@ if __name__ == "__main__":
     points_label = Label(header_frame, text="100 BODOV", font=("Montserrat", 15))
     points_label.pack(side=tk.RIGHT, padx=5, pady=5)
 
-    startButton = Button(header_frame, text="START", height=1, width=12, font=("Montserrat", 15))
+    startButton = Button(header_frame, text="START", height=1, width=12, font=("Montserrat", 15), bg="green", fg="white")
     startButton.pack(side=tk.RIGHT, padx=5, pady=5)
 
     body_frame = Frame(root, bg="dark gray")
