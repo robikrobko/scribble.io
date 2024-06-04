@@ -110,28 +110,40 @@ class PaintApp:
         self.total_rounds = 5
         self.points_per_round = 1000
         self.points_history = {}
+        self.clicked_button = None
 
     def setup_ui(self):
         self.holder = Frame(self.parent, height=120, width=500, bg="dark gray", padx=100, pady=10)
         self.holder.pack(fill=tk.X, padx=5, pady=5)
 
+        def change_button_bg(button, color):
+            button.config(bg=color)
+
+        def reset_button_bg():
+            if self.clicked_button:
+                self.clicked_button.config(bg="SystemButtonFace")
+
         pencilButton = Button(self.holder, text="Pero", height=1, width=12, command=self.pencil, font=("Montserrat", 9))
         pencilButton.grid(row=0, column=0)
+        pencilButton.bind("<Button-1>", lambda event: (reset_button_bg(), change_button_bg(pencilButton, "#c4c4c4"), setattr(self, "clicked_button", pencilButton)))
 
         eraserButton = Button(self.holder, text="Guma", height=1, width=12, command=self.eraser, font=("Montserrat", 9))
         eraserButton.grid(row=0, column=1)
+        eraserButton.bind("<Button-1>", lambda event: (reset_button_bg(), change_button_bg(eraserButton, "#c4c4c4"), setattr(self, "clicked_button", eraserButton)))
 
-        colorButton = Button(self.holder, text="Vyber Farbu", height=1, width=12, command=self.colorChoice,
-                             font=("Montserrat", 9))
+        colorButton = Button(self.holder, text="Vyber Farbu", height=1, width=12, command=self.colorChoice,font=("Montserrat", 9))
         colorButton.grid(row=0, column=2)
+        colorButton.bind("<Button-1>", lambda event: (reset_button_bg(), change_button_bg(colorButton, "#c4c4c4"), setattr(self, "clicked_button", colorButton)))
 
         sizeiButton = Button(self.holder, text="Hrubka +", height=1, width=12, command=self.strokeI,
                              font=("Montserrat", 9))
         sizeiButton.grid(row=0, column=3)
+        sizeiButton.bind("<Button-1>", lambda event: (reset_button_bg(), change_button_bg(sizeiButton, "#c4c4c4"), setattr(self, "clicked_button", sizeiButton)))
 
         sizedButton = Button(self.holder, text="Hrubka -", height=1, width=12, command=self.strokeD,
                              font=("Montserrat", 9))
         sizedButton.grid(row=0, column=4)
+        sizedButton.bind("<Button-1>", lambda event: (reset_button_bg(), change_button_bg(sizedButton, "#c4c4c4"), setattr(self, "clicked_button", sizedButton)))
 
         clearButton = Button(self.holder, text="Vymazat", height=1, width=12, command=self.clearScreen,
                              font=("Montserrat", 9, "bold"), bg="red", fg="white")
