@@ -147,7 +147,7 @@ class PaintApp:
         # self.new_word_button = Button(self.holder, text="Vyber nové slovo", height=1, width=12, command=self.update_word)
         # self.new_word_button.grid(row=1, column=3, columnspan=3, pady=10)
 
-        self.canvas = Canvas(self.parent, height=450, width=500, bg="white")
+        self.canvas = Canvas(self.parent, height=450, width=500, bg="white", cursor="pencil")
         self.canvas.pack(fill=tk.BOTH, expand=True, padx=5, pady=5)
 
         self.canvas.bind("<B1-Motion>", self.paint)
@@ -239,9 +239,11 @@ class PaintApp:
 
     def pencil(self):
         self.penColor = "black"
+        self.canvas.config(cursor="pencil")
 
     def eraser(self):
         self.penColor = "white"
+        self.canvas.config(cursor="crosshair")
 
     def colorChoice(self):
         color = colorchooser.askcolor(title="Select a Color")
