@@ -85,11 +85,11 @@ class PaintApp:
             if self.clicked_button:
                 self.clicked_button.config(bg="SystemButtonFace")
 
-        pencilButton = Button(self.holder, text="Pero", height=1, width=12, command=self.pencil)
+        pencilButton = Button(self.holder, text="Pero", height=1, width=12, command=self.pencil, font=("Montserrat", 9))
         pencilButton.grid(row=0, column=0)
         pencilButton.bind("<Button-1>", lambda event: (reset_button_bg(), change_button_bg(pencilButton, "#c4c4c4"), setattr(self, "clicked_button", pencilButton)))
 
-        eraserButton = Button(self.holder, text="Guma", height=1, width=12, command=self.eraser)
+        eraserButton = Button(self.holder, text="Guma", height=1, width=12, command=self.eraser, font=("Montserrat", 9))
         eraserButton.grid(row=0, column=1)
         eraserButton.bind("<Button-1>", lambda event: (reset_button_bg(), change_button_bg(eraserButton, "#c4c4c4"), setattr(self, "clicked_button", eraserButton)))
 
@@ -98,17 +98,17 @@ class PaintApp:
         colorButton.bind("<Button-1>", lambda event: (reset_button_bg(), change_button_bg(colorButton, "#c4c4c4"), setattr(self, "clicked_button", colorButton)))
 
         sizeiButton = Button(self.holder, text="Hrubka +", height=1, width=12, command=self.strokeI,
-                             )
+                             font=("Montserrat", 9))
         sizeiButton.grid(row=0, column=3)
         sizeiButton.bind("<Button-1>", lambda event: (reset_button_bg(), change_button_bg(sizeiButton, "#c4c4c4"), setattr(self, "clicked_button", sizeiButton)))
 
         sizedButton = Button(self.holder, text="Hrubka -", height=1, width=12, command=self.strokeD,
-                             )
+                             font=("Montserrat", 9))
         sizedButton.grid(row=0, column=4)
         sizedButton.bind("<Button-1>", lambda event: (reset_button_bg(), change_button_bg(sizedButton, "#c4c4c4"), setattr(self, "clicked_button", sizedButton)))
 
         clearButton = Button(self.holder, text="Vymazat", height=1, width=12, command=self.clearScreen,
-                              bg="red", fg="white")
+                             font=("Montserrat", 9, "bold"), bg="red", fg="white")
         clearButton.grid(row=0, column=5)
 
         self.thicknessLabel = Label(self.holder, text=f"Hrubka: {self.stroke}", height=1, width=12)
@@ -255,8 +255,6 @@ class PaintApp:
 class ChatWindow:
 
     def __init__(self, parent, paint_app):
-
-
         self.parent = parent
         self.ip_list = ip_list
         self.paint_app = paint_app
@@ -272,7 +270,7 @@ class ChatWindow:
         input_frame.pack(fill=tk.X)
 
         self._address = tk.Entry(input_frame)
-        self._address.insert(0, '192.18.50.219')
+        self._address.insert(0, '192.168.50.219')
         self._address.pack(side=tk.LEFT, padx=5, pady=5)
         self._address.config(width=11)
 
@@ -298,11 +296,9 @@ class ChatWindow:
             if address[0] not in self.ip_list:
                 self.ip_list.append(address[0])
             self.add_message(address[0], data.decode())
-            entered_word = data.decode()
-            if entered_word == self.paint_app.hodnota:
+            self.entered_word = data.decode()
+            if self.entered_word == self.paint_app.hodnota:
                 self._message.delete(0, tk.END)
-                self.body += 1
-                points_label.config(text=self.body)
                 tk.messagebox.showinfo(":)", "Uhadol" + " " + address[0])
                 self.paint_app.update_word()
                 self.paint_app.stop_timer()
@@ -321,6 +317,9 @@ class ChatWindow:
         message = self._message.get().strip()
         address = self._address.get()
         if address and message:
+            if self.entered_word == self.paint_app.hodnota:
+                self.body += 1
+                points_label.config(text=self.body)
             self._sock.sendto(message.encode(), (address, 20000))
             self.add_message(address, message)
             self._message.delete(0, tk.END)
@@ -368,7 +367,7 @@ if __name__ == "__main__":
     letter_label = Label(header_frame, text=ciarky(vyberSlovo()))
     letter_label.pack(side=tk.LEFT, fill=tk.BOTH, expand=True, pady=5)
 
-    points_label = Label(header_frame, text="0")
+    points_label = Label(header_frame, text="0", font=("Montserrat", 15))
     points_label.pack(side=tk.RIGHT, padx=5, pady=5)
 
     startButton = Button(header_frame, text="START", height=1, width=12, bg="green", fg="white")
