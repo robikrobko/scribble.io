@@ -85,27 +85,30 @@ class PaintApp:
             if self.clicked_button:
                 self.clicked_button.config(bg="SystemButtonFace")
 
-        pencilButton = Button(self.holder, text="Pero", height=1, width=12, command=self.pencil)
+        pencilButton = Button(self.holder, text="Pero", height=1, width=12, command=self.pencil, font=("Montserrat", 9))
         pencilButton.grid(row=0, column=0)
         pencilButton.bind("<Button-1>", lambda event: (reset_button_bg(), change_button_bg(pencilButton, "#c4c4c4"), setattr(self, "clicked_button", pencilButton)))
 
-        eraserButton = Button(self.holder, text="Guma", height=1, width=12, command=self.eraser)
+        eraserButton = Button(self.holder, text="Guma", height=1, width=12, command=self.eraser, font=("Montserrat", 9))
         eraserButton.grid(row=0, column=1)
         eraserButton.bind("<Button-1>", lambda event: (reset_button_bg(), change_button_bg(eraserButton, "#c4c4c4"), setattr(self, "clicked_button", eraserButton)))
 
-        colorButton = Button(self.holder, text="Vyber Farbu", height=1, width=12, command=self.colorChoice)
+        colorButton = Button(self.holder, text="Vyber Farbu", height=1, width=12, command=self.colorChoice,font=("Montserrat", 9))
         colorButton.grid(row=0, column=2)
         colorButton.bind("<Button-1>", lambda event: (reset_button_bg(), change_button_bg(colorButton, "#c4c4c4"), setattr(self, "clicked_button", colorButton)))
 
-        sizeiButton = Button(self.holder, text="Hrubka +", height=1, width=12, command=self.strokeI)
+        sizeiButton = Button(self.holder, text="Hrubka +", height=1, width=12, command=self.strokeI,
+                             font=("Montserrat", 9))
         sizeiButton.grid(row=0, column=3)
         sizeiButton.bind("<Button-1>", lambda event: (reset_button_bg(), change_button_bg(sizeiButton, "#c4c4c4"), setattr(self, "clicked_button", sizeiButton)))
 
-        sizedButton = Button(self.holder, text="Hrubka -", height=1, width=12, command=self.strokeD,)
+        sizedButton = Button(self.holder, text="Hrubka -", height=1, width=12, command=self.strokeD,
+                             font=("Montserrat", 9))
         sizedButton.grid(row=0, column=4)
         sizedButton.bind("<Button-1>", lambda event: (reset_button_bg(), change_button_bg(sizedButton, "#c4c4c4"), setattr(self, "clicked_button", sizedButton)))
 
-        clearButton = Button(self.holder, text="Vymazat", height=1, width=12, command=self.clearScreen, bg="red", fg="white")
+        clearButton = Button(self.holder, text="Vymazat", height=1, width=12, command=self.clearScreen,
+                             font=("Montserrat", 9, "bold"), bg="red", fg="white")
         clearButton.grid(row=0, column=5)
 
         self.thicknessLabel = Label(self.holder, text=f"Hrubka: {self.stroke}", height=1, width=12)
@@ -252,6 +255,7 @@ class PaintApp:
 class ChatWindow:
 
     def __init__(self, parent, paint_app):
+        entry_font = font.Font(font=("Montserrat"))
 
         self.parent = parent
         self.ip_list = ip_list
@@ -259,27 +263,28 @@ class ChatWindow:
         self.frame = Frame(self.parent)
         self.frame.pack(fill=tk.BOTH, expand=True, padx=5, pady=5)
         self.guess_enabled = False
+        self.body = 0
 
-        self.listbox = tk.Listbox(self.frame)
+        self.listbox = tk.Listbox(self.frame, font=entry_font)
         self.listbox.pack(fill=tk.BOTH, expand=True)
 
         input_frame = Frame(self.frame)
         input_frame.pack(fill=tk.X)
 
-        self._address = tk.Entry(input_frame)
-        self._address.insert(0, '192.168.48.61')
+        self._address = tk.Entry(input_frame, font=entry_font)
+        self._address.insert(0, '192.18.50.219')
         self._address.pack(side=tk.LEFT, padx=5, pady=5)
         self._address.config(width=11)
 
-        self._message = tk.Entry(input_frame)
+        self._message = tk.Entry(input_frame, font=entry_font)
         self._message.insert(0, '')
         self._message.pack(side=tk.LEFT, fill=tk.X, expand=True, padx=5, pady=5)
         self._message.bind("<Return>", self.btn_pressed)
 
-        self._btn_send = Button(input_frame, text="Odoslat", command=self.btn_pressed)
+        self._btn_send = Button(input_frame, text="Odoslat", command=self.btn_pressed, font=("Montserrat", 9))
         self._btn_send.pack(side=tk.LEFT, padx=5, pady=5)
 
-        self._btn_connect = Button(input_frame, text="Pripojit", command=self.btn_pressed2)
+        self._btn_connect = Button(input_frame, text="Pripojit", command=self.btn_pressed2, font=("Montserrat", 9))
         self._btn_connect.pack(side=tk.LEFT, padx=5, pady=5)
 
         self._sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
@@ -296,6 +301,8 @@ class ChatWindow:
             entered_word = data.decode()
             if entered_word == self.paint_app.hodnota:
                 self._message.delete(0, tk.END)
+                self.body += 1
+                points_label.config(text=self.body)
                 tk.messagebox.showinfo(":)", "Uhadol" + " " + address[0])
                 self.paint_app.update_word()
                 self.paint_app.stop_timer()
@@ -355,16 +362,16 @@ if __name__ == "__main__":
     header_frame = Frame(root, height=50, width=1100)
     header_frame.pack(fill=tk.X, padx=5, pady=5)
 
-    timer_label = Label(header_frame, text="Čas: 60 s")
+    timer_label = Label(header_frame, text="Čas: 60 s", font=("Montserrat", 15))
     timer_label.pack(side=tk.LEFT, padx=5, pady=5)
 
-    letter_label = Label(header_frame, text=ciarky(vyberSlovo()))
+    letter_label = Label(header_frame, text=ciarky(vyberSlovo()), font=("Montserrat", 15))
     letter_label.pack(side=tk.LEFT, fill=tk.BOTH, expand=True, pady=5)
 
-    points_label = Label(header_frame, text="100 BODOV")
+    points_label = Label(header_frame, text="0", font=("Montserrat", 15))
     points_label.pack(side=tk.RIGHT, padx=5, pady=5)
 
-    startButton = Button(header_frame, text="START", height=1, width=12,  bg="green", fg="white")
+    startButton = Button(header_frame, text="START", height=1, width=12, font=("Montserrat", 15), bg="green", fg="white")
     startButton.pack(side=tk.RIGHT, padx=5, pady=5)
 
     body_frame = Frame(root, bg="dark gray")
