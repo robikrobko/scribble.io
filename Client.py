@@ -296,8 +296,8 @@ class ChatWindow:
             if address[0] not in self.ip_list:
                 self.ip_list.append(address[0])
             self.add_message(address[0], data.decode())
-            self.entered_word = data.decode()
-            if self.entered_word == self.paint_app.hodnota:
+            entered_word = data.decode()
+            if entered_word == self.paint_app.hodnota:
                 self._message.delete(0, tk.END)
                 tk.messagebox.showinfo(":)", "Uhadol" + " " + address[0])
                 self.paint_app.update_word()
@@ -317,9 +317,6 @@ class ChatWindow:
         message = self._message.get().strip()
         address = self._address.get()
         if address and message:
-            if self.entered_word == self.paint_app.hodnota:
-                self.body += 1
-                points_label.config(text=self.body)
             self._sock.sendto(message.encode(), (address, 20000))
             self.add_message(address, message)
             self._message.delete(0, tk.END)
