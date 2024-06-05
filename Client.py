@@ -320,6 +320,9 @@ class ChatWindow:
             self._sock.sendto(message.encode(), (address, 20000))
             self.add_message(address, message)
             self._message.delete(0, tk.END)
+            if self.entered_word == self.paint_app.hodnota:
+                self.body += 1
+                points_label.config(text=self.body)
             return
         self._message.delete(0, tk.END)
 
