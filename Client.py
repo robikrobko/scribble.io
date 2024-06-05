@@ -68,10 +68,6 @@ class PaintApp:
         self.drawing_enabled = False
         self.setup_ui()
         self.timer_id = None
-        self.round = 1
-        self.total_rounds = 5
-        self.points_per_round = 1000
-        self.points_history = {}
         self.clicked_button = None
 
     def setup_ui(self):
@@ -188,9 +184,6 @@ class PaintApp:
         self.clearScreen()
         self.stop_timer()
         self.start_delay()
-        self.round += 1
-        if self.round > self.total_rounds:
-            self.end_game()
 
     def end_game(self):
         winner, winner_points = self.determine_winner()
@@ -320,9 +313,6 @@ class ChatWindow:
             self._sock.sendto(message.encode(), (address, 20000))
             self.add_message(address, message)
             self._message.delete(0, tk.END)
-            if self.entered_word == self.paint_app.hodnota:
-                self.body += 1
-                points_label.config(text=self.body)
             return
         self._message.delete(0, tk.END)
 
@@ -337,21 +327,6 @@ class ChatWindow:
     def start_guessing_after_delay(self):
         self.guess_enabled = True
 
-
-def point_system(num_players, total_points):
-    points = []
-    remaining_points = total_points
-    for i in range(1, num_players + 1):
-        player_points = int(total_points * (1 / i))
-        player_points = min(player_points, remaining_points)
-        remaining_points -= player_points
-        points.append(player_points)
-    return points
-
-
-total_points = 1000
-num_players_connected = len(ip_list)
-points_distribution = point_system(num_players_connected, total_points)
 
 if __name__ == "__main__":
     root = tk.Tk()
