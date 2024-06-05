@@ -1,7 +1,7 @@
 import random
 import tkinter as tk
 from socket import socket
-from tkinter import Frame, Canvas, Button, Label, colorchooser, messagebox, font
+from tkinter import Frame, Canvas, Button, Label, colorchooser, messagebox
 import socket
 import select
 import datetime
@@ -26,6 +26,7 @@ def vyberSlovo():
              "hus", "labut", "cajka", "sova", "straka", "kos", "vazka", "motyl", "chrobak",
              "komar", "osadka", "vcela", "medovacik", "pcela", "bumbar", "motylik", "hmyz",
              "krava", "dazd", "mraz", "vietor", "jesen", "zima", "zima", "jesen", "leto"]
+
     current_word = random.choice(words)
     return current_word
 
@@ -81,11 +82,11 @@ class PaintApp:
             if self.clicked_button:
                 self.clicked_button.config(bg="SystemButtonFace")
 
-        pencilButton = Button(self.holder, text="Pero", height=1, width=12, command=self.pencil, font=("Montserrat", 9))
+        pencilButton = Button(self.holder, text="Pero", height=1, width=12, command=self.pencil)
         pencilButton.grid(row=0, column=0)
         pencilButton.bind("<Button-1>", lambda event: (reset_button_bg(), change_button_bg(pencilButton, "#c4c4c4"), setattr(self, "clicked_button", pencilButton)))
 
-        eraserButton = Button(self.holder, text="Guma", height=1, width=12, command=self.eraser, font=("Montserrat", 9))
+        eraserButton = Button(self.holder, text="Guma", height=1, width=12, command=self.eraser)
         eraserButton.grid(row=0, column=1)
         eraserButton.bind("<Button-1>", lambda event: (reset_button_bg(), change_button_bg(eraserButton, "#c4c4c4"), setattr(self, "clicked_button", eraserButton)))
 
@@ -93,29 +94,20 @@ class PaintApp:
         colorButton.grid(row=0, column=2)
         colorButton.bind("<Button-1>", lambda event: (reset_button_bg(), change_button_bg(colorButton, "#c4c4c4"), setattr(self, "clicked_button", colorButton)))
 
-        sizeiButton = Button(self.holder, text="Hrubka +", height=1, width=12, command=self.strokeI,
-                             font=("Montserrat", 9))
+        sizeiButton = Button(self.holder, text="Hrubka +", height=1, width=12, command=self.strokeI)
         sizeiButton.grid(row=0, column=3)
         sizeiButton.bind("<Button-1>", lambda event: (reset_button_bg(), change_button_bg(sizeiButton, "#c4c4c4"), setattr(self, "clicked_button", sizeiButton)))
 
-        sizedButton = Button(self.holder, text="Hrubka -", height=1, width=12, command=self.strokeD,
-                             font=("Montserrat", 9))
+        sizedButton = Button(self.holder, text="Hrubka -", height=1, width=12, command=self.strokeD)
         sizedButton.grid(row=0, column=4)
         sizedButton.bind("<Button-1>", lambda event: (reset_button_bg(), change_button_bg(sizedButton, "#c4c4c4"), setattr(self, "clicked_button", sizedButton)))
 
-        clearButton = Button(self.holder, text="Vymazat", height=1, width=12, command=self.clearScreen,
-                             font=("Montserrat", 9, "bold"), bg="red", fg="white")
+        clearButton = Button(self.holder, text="Vymazat", height=1, width=12, command=self.clearScreen, bg="red", fg="white")
         clearButton.grid(row=0, column=5)
 
         self.thicknessLabel = Label(self.holder, text=f"Hrubka: {self.stroke}", height=1, width=12)
         self.thicknessLabel.grid(row=0, column=6)
 
-        # Add word label and button to choose a new word
-        # self.word_label = Label(self.holder, text="Vybrané slovo: " + self.hodnota, font=("Arial", 14))
-        # self.word_label.grid(row=1, column=0, columnspan=3, pady=10)
-
-        # self.new_word_button = Button(self.holder, text="Vyber nové slovo", height=1, width=12, command=self.update_word)
-        # self.new_word_button.grid(row=1, column=3, columnspan=3, pady=10)
 
         self.canvas = Canvas(self.parent, height=450, width=500, bg="white", cursor="pencil")
         self.canvas.pack(fill=tk.BOTH, expand=True, padx=5, pady=5)
@@ -184,15 +176,6 @@ class PaintApp:
         self.clearScreen()
         self.stop_timer()
         self.start_delay()
-
-    def end_game(self):
-        winner, winner_points = self.determine_winner()
-        messagebox.showinfo("Koniec hry", f"Vitaz: {winner} s {winner_points} bodmi!")
-
-    def determine_winner(self):
-        max_points = max(self.points_history.values())
-        winner = [player for player, points in self.points_history.items() if points == max_points][0]
-        return winner, max_points
 
     def strokeI(self):
         if self.stroke != 10:
@@ -330,7 +313,7 @@ class ChatWindow:
 
 if __name__ == "__main__":
     root = tk.Tk()
-    root.title("MultiApp - Paint and Chat")
+    root.title("Hadaj.oi")
     root.geometry("1400x650")
 
     header_frame = Frame(root, height=50, width=1100)
@@ -342,7 +325,7 @@ if __name__ == "__main__":
     letter_label = Label(header_frame, text=ciarky(vyberSlovo()))
     letter_label.pack(side=tk.LEFT, fill=tk.BOTH, expand=True, pady=5)
 
-    points_label = Label(header_frame, text="0", font=("Montserrat", 15))
+    points_label = Label(header_frame, text="0")
     points_label.pack(side=tk.RIGHT, padx=5, pady=5)
 
     startButton = Button(header_frame, text="START", height=1, width=12, bg="green", fg="white")
