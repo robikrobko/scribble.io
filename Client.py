@@ -1,12 +1,13 @@
 import random
 import tkinter as tk
 from socket import socket
-from tkinter import Frame, Canvas, Button, Label, colorchooser, messagebox, font
+from tkinter import Frame, Canvas, Button, Label, colorchooser, messagebox
 import socket
 import select
 import datetime
 import os
 import requests
+import tkinter.font as tkFont
 
 
 ip_list = []
@@ -146,6 +147,8 @@ class PaintApp:
                 self.chat_window.guess_enabled = True
                 self.start_delay()
                 # self.word_label.grid_remove()
+
+            self.chat_window.hide_name_entry()
         else:
             messagebox.showerror("Error", "Pripojenie k internetu zlyhalo.")
 
@@ -265,9 +268,8 @@ class PaintApp:
 class ChatWindow:
 
     def __init__(self, parent, paint_app):
-        self.ip_list2 = ip_list2
         self.parent = parent
-        self.ip_list = ip_list
+        self.ip_list = []
         self.ip_name_map = {}
         self.paint_app = paint_app
         self.frame = Frame(self.parent)
@@ -275,7 +277,10 @@ class ChatWindow:
         self.guess_enabled = False
         self.body = 0
 
-        self.listbox = tk.Listbox(self.frame)
+        # Create a bigger font for the listbox
+        self.listbox_font = tkFont.Font(family="Helvetica", size=14)
+
+        self.listbox = tk.Listbox(self.frame, font=self.listbox_font)
         self.listbox.pack(fill=tk.BOTH, expand=True)
 
         input_frame = Frame(self.frame)
@@ -289,7 +294,7 @@ class ChatWindow:
         self._address = tk.Entry(input_frame)
         self._address.insert(0, '192.168.50.219')
         self._address.pack(side=tk.LEFT, padx=5, pady=5)
-        self._address.config(width=11, font=("Helvetica", 13))
+        self._address.config(width=14, font=("Helvetica", 13))
 
         self._message = tk.Entry(input_frame)
         self._message.insert(0, '')
@@ -306,6 +311,9 @@ class ChatWindow:
         self._sock.bind(('0.0.0.0', 20000))
         self.periodic()
 
+    def hide_name_entry(self):
+        self._message_name.pack_forget()
+
     def periodic(self):
         rx_ev, _, _ = select.select([self._sock], [], [], 0)
         if rx_ev:
@@ -315,9 +323,8 @@ class ChatWindow:
             if ip_address not in self.ip_list:
                 self.ip_list.append(ip_address)
 
-
             # Lookup the name in the dictionary, defaulting to the IP address if not found
-            name = self.ip_name_map[ip_address]
+            name = self.ip_name_map.get(ip_address, ip_address)
             print(self.ip_name_map)
             self.add_message(data.decode(), name)
 
