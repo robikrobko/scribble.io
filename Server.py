@@ -53,7 +53,24 @@ class Server():
         self._server_socket.bind(("0.0.0.0", 20000))
         self._server_socket.listen(1)
         self._clients = []
+        self._points = {}
         print("SERVER VYTVORENY")
+
+    def notify_ip(self, ip_address):
+        notify_socket = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+        notify_message = "ADD POINTS"
+        notify_port = 30000  # Replace with the desired port number
+        notify_socket.sendto(notify_message.encode(), (ip_address, notify_port))
+        notify_socket.close()
+        self.award_points(ip_address)
+        print(f"NOTIFICATION SENT TO {ip_address}:{notify_port}")
+    
+    def award_points(self, ip_address):
+        if ip_address in self._points:
+            self._points[ip_address] += 10
+        else:
+            self._points[ip_address] = 10
+        print(f"Points awarded to {ip_address}: {self._points[ip_address]}")
 
     def send_message(self, message):
         for client in self._clients:

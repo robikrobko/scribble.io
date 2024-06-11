@@ -272,7 +272,7 @@ class ChatWindow:
         self._sock.bind(('0.0.0.0', 20000))
         self.periodic()
 
-    def periodic(self):
+    def periodic(self, message, name):
         rx_ev, _, _ = select.select([self._sock], [], [], 0)
         if rx_ev:
             data, addr = self._sock.recvfrom(200)
@@ -287,14 +287,28 @@ class ChatWindow:
             print(self.ip_name_map)
             self.add_message(data.decode(), name)
 
+        if self.paint_app.hodnota and message.strip() == self.paint_app.hodnota:
+            self.send_winner_ip_to_server(name)    
+
             entered_word = data.decode()
             if entered_word == self.paint_app.hodnota:
                 self._message.delete(0, tk.END)
                 messagebox.showinfo(":)", f"Uhadol {name}")
                 self.paint_app.update_word()
                 self.paint_app.stop_timer()
-                # self.paint_app.start_delay()
+                # self.paint_app.start_delay() 
         self.parent.after(1000, self.periodic)
+        
+
+    def send_winner_ip_to_server(self, winner_name):
+        winner_ip = None
+        for ip, name in self.ip_name_map.items():
+            if name == winner_name:
+                winner_ip = ip
+                break
+        if winner_ip:
+            message = f"WINNER_IP {winner_ip}"
+            self.paint_app.server_socket.send(message.encode())
 
     def add_message(self, message, name):
         if not self.guess_enabled:
