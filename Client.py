@@ -59,7 +59,10 @@ def is_ip_connected():
     except OSError:
         return False
 
-
+def is_color_dark(color):
+    r, g, b = int(color[1:3], 16), int(color[3:5], 16), int(color[5:7], 16)
+    luminance = 0.299 * r + 0.587 * g + 0.114 * b
+    return luminance < 128
 
 class PaintApp:
     def __init__(self, parent, chat_window, timer_label, points_label, letter_label):
@@ -227,6 +230,7 @@ class PaintApp:
     def colorChoice(self):
         self.penColor = colorchooser.askcolor(color=self.penColor)[1]
         self.colorButton.config(bg=self.penColor)
+        self.colorButton.config(fg="white" if is_color_dark(self.penColor) else "black")
 
     def paint(self, event):
         if not self.drawing_enabled:
