@@ -83,7 +83,7 @@ class Server():
     def notify_ip(self, ip_address):
         notify_socket = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
         notify_message = "ADD POINTS"
-        notify_port = 30000  # Replace with the desired port number
+        notify_port = 20000  # Replace with the desired port number
         notify_socket.sendto(notify_message.encode(), (ip_address, notify_port))
         notify_socket.close()
         self.award_points(ip_address)
