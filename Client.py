@@ -272,7 +272,7 @@ class ChatWindow:
         self._sock.bind(('0.0.0.0', 20000))
         self.periodic()
 
-    def periodic(self, message, name):
+    def periodic(self):
         rx_ev, _, _ = select.select([self._sock], [], [], 0)
         if rx_ev:
             data, addr = self._sock.recvfrom(200)
@@ -285,10 +285,7 @@ class ChatWindow:
             # Lookup the name in the dictionary, defaulting to the IP address if not found
             name = self.ip_name_map[ip_address]
             print(self.ip_name_map)
-            self.add_message(data.decode(), name)
-
-        if self.paint_app.hodnota and message.strip() == self.paint_app.hodnota:
-            self.send_winner_ip_to_server(name)    
+            self.add_message(data.decode(), name)   
 
             entered_word = data.decode()
             if entered_word == self.paint_app.hodnota:
@@ -316,6 +313,8 @@ class ChatWindow:
         timestamp = datetime.datetime.now().strftime('%H:%M:%S')
         self.listbox.insert(tk.END, f"{timestamp} {name}: {message}")
         self.listbox.yview(tk.END)
+        if self.paint_app.hodnota and message.strip() == self.paint_app.hodnota:
+            self.send_winner_ip_to_server(name)
 
     def btn_pressed(self, event=None):
         message = self._message.get().strip()
