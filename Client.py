@@ -102,9 +102,9 @@ class PaintApp:
         eraserButton.grid(row=0, column=1)
         eraserButton.bind("<Button-1>", lambda event: (reset_button_bg(), change_button_bg(eraserButton, "#c4c4c4"), setattr(self, "clicked_button", eraserButton)))
 
-        colorButton = Button(self.holder, text="Vyber Farbu", height=1, width=12, command=self.colorChoice, font=("Helvetica", 13))
-        colorButton.grid(row=0, column=2)
-        colorButton.bind("<Button-1>", lambda event: (reset_button_bg(), change_button_bg(colorButton, "#c4c4c4"), setattr(self, "clicked_button", colorButton)))
+        self.colorButton = Button(self.holder, text="Vyber Farbu", height=1, width=12, command=self.colorChoice, font=("Helvetica", 13))
+        self.colorButton.grid(row=0, column=2)
+        self.colorButton.bind("<Button-1>", lambda event: (reset_button_bg(), change_button_bg(self.colorButton, "#c4c4c4"), setattr(self, "clicked_button", self.colorButton)))
 
         sizeiButton = Button(self.holder, text="Hrubka +", height=1, width=12, command=self.strokeI, font=("Helvetica", 13))
         sizeiButton.grid(row=0, column=3)
@@ -225,9 +225,8 @@ class PaintApp:
         self.canvas.config(cursor="crosshair")
 
     def colorChoice(self):
-        color = colorchooser.askcolor(title="Vyber farbu")
-        if color[1]:
-            self.penColor = color[1]
+        self.penColor = colorchooser.askcolor(color=self.penColor)[1]
+        self.colorButton.config(bg=self.penColor)
 
     def paint(self, event):
         if not self.drawing_enabled:
