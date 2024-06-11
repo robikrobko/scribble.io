@@ -265,6 +265,8 @@ class PaintApp:
 class ChatWindow:
 
     def __init__(self, parent, paint_app):
+        self.parent = parent
+        self.paint_app = paint_app
         entry_font = font.Font(font=("Montserrat"))
 
         self.parent = parent
@@ -317,12 +319,26 @@ class ChatWindow:
             print(data.decode())
         self.parent.after(1000, self.periodic)
 
-    def add_message(self, address, message):
+    def add_message(self, message, name):
         if not self.guess_enabled:
             return
         timestamp = datetime.datetime.now().strftime('%H:%M:%S')
-        self.listbox.insert(tk.END, f"{timestamp} {address}: {message}")
+        self.listbox.insert(tk.END, f"{timestamp} {name}: {message}")
         self.listbox.yview(tk.END)
+
+        if self.paint_app.hodnota and message.strip() == self.paint_app.hodnota:
+            self.send_winner_ip_to_server(name)
+
+
+    def send_winner_ip_to_server(self, winner_name):
+            winner_ip = None
+            for ip, name in self.ip_name_map.items():
+                if name == winner_name:
+                    winner_ip = ip
+                    break
+            if winner_ip:
+                message = f"WINNER_IP {winner_ip}"
+                self.paint_app.server_socket.send(message.encode())
 
     def btn_pressed(self, event=None):
         message = self._message.get().strip()
