@@ -1,12 +1,16 @@
 import random
 import tkinter as tk
 from socket import socket
-from tkinter import Frame, Canvas, Button, Label, colorchooser, messagebox
+from tkinter import Frame, Canvas, Button, Label, colorchooser, messagebox, font
 import socket
 import select
 import datetime
+import os
+import requests
+
 
 ip_list = []
+ip_list2 = {}
 
 
 def vyberSlovo():
@@ -48,6 +52,17 @@ def ciarky_premena(hodnota, hodnota2):
             break
     return " ".join(novy)
 
+import socket
+
+def is_ip_connected():
+    try:
+        # Attempt to connect to a known DNS server (8.8.8.8) on port 53
+        socket.create_connection(("8.8.8.8", 53), timeout=5)
+        return True
+    except OSError:
+        return False
+
+
 
 class PaintApp:
     def __init__(self, parent, chat_window, timer_label, points_label, letter_label):
@@ -64,7 +79,7 @@ class PaintApp:
         self.prevPoint = [0, 0]
         self.currentPoint = [0, 0]
         self.penColor = "black"
-        self.stroke = 1
+        self.stroke = 5
         self.timer_seconds = 60
         self.drawing_enabled = False
         self.setup_ui()
@@ -82,30 +97,30 @@ class PaintApp:
             if self.clicked_button:
                 self.clicked_button.config(bg="SystemButtonFace")
 
-        pencilButton = Button(self.holder, text="Pero", height=1, width=12, command=self.pencil)
+        pencilButton = Button(self.holder, text="Pero", height=1, width=12, command=self.pencil, font=("Helvetica", 13))
         pencilButton.grid(row=0, column=0)
         pencilButton.bind("<Button-1>", lambda event: (reset_button_bg(), change_button_bg(pencilButton, "#c4c4c4"), setattr(self, "clicked_button", pencilButton)))
 
-        eraserButton = Button(self.holder, text="Guma", height=1, width=12, command=self.eraser)
+        eraserButton = Button(self.holder, text="Guma", height=1, width=12, command=self.eraser, font=("Helvetica", 13))
         eraserButton.grid(row=0, column=1)
         eraserButton.bind("<Button-1>", lambda event: (reset_button_bg(), change_button_bg(eraserButton, "#c4c4c4"), setattr(self, "clicked_button", eraserButton)))
 
-        colorButton = Button(self.holder, text="Vyber Farbu", height=1, width=12, command=self.colorChoice)
+        colorButton = Button(self.holder, text="Vyber Farbu", height=1, width=12, command=self.colorChoice, font=("Helvetica", 13))
         colorButton.grid(row=0, column=2)
         colorButton.bind("<Button-1>", lambda event: (reset_button_bg(), change_button_bg(colorButton, "#c4c4c4"), setattr(self, "clicked_button", colorButton)))
 
-        sizeiButton = Button(self.holder, text="Hrubka +", height=1, width=12, command=self.strokeI)
+        sizeiButton = Button(self.holder, text="Hrubka +", height=1, width=12, command=self.strokeI, font=("Helvetica", 13))
         sizeiButton.grid(row=0, column=3)
         sizeiButton.bind("<Button-1>", lambda event: (reset_button_bg(), change_button_bg(sizeiButton, "#c4c4c4"), setattr(self, "clicked_button", sizeiButton)))
 
-        sizedButton = Button(self.holder, text="Hrubka -", height=1, width=12, command=self.strokeD)
+        sizedButton = Button(self.holder, text="Hrubka -", height=1, width=12, command=self.strokeD, font=("Helvetica", 13))
         sizedButton.grid(row=0, column=4)
         sizedButton.bind("<Button-1>", lambda event: (reset_button_bg(), change_button_bg(sizedButton, "#c4c4c4"), setattr(self, "clicked_button", sizedButton)))
 
-        clearButton = Button(self.holder, text="Vymazat", height=1, width=12, command=self.clearScreen, bg="red", fg="white")
+        clearButton = Button(self.holder, text="Vymazat", height=1, width=12, command=self.clearScreen, bg="red", fg="white", font=("Helvetica", 13))
         clearButton.grid(row=0, column=5)
 
-        self.thicknessLabel = Label(self.holder, text=f"Hrubka: {self.stroke}", height=1, width=12)
+        self.thicknessLabel = Label(self.holder, text=f"Hrubka: {self.stroke}", height=1, width=12, font=("Helvetica", 13))
         self.thicknessLabel.grid(row=0, column=6)
 
 
@@ -117,51 +132,70 @@ class PaintApp:
         self.canvas.bind("<Button-1>", self.paint)
 
     def start_hra(self):
-        self.startButton.destroy()
         self.vyber = "192.168.48.61"
-        if self.vyber == self._address.get():
-            self.drawing_enabled = False
-            self.chat_window.guess_enabled = True
-            self.timer_label.config(text="")
-            # self.word_label.grid_remove()
-            # self.new_word_button.grid_remove()
+        if is_ip_connected():
+            self.startButton.destroy()
+            if self.vyber == self._address.get():
+                self.drawing_enabled = False
+                self.chat_window.guess_enabled = True
+                self.timer_label.config(text="", font=("Helvetica", 20))
+                # self.word_label.grid_remove()
+                # self.new_word_button.grid_remove()
+            else:
+                self.drawing_enabled = True
+                self.chat_window.guess_enabled = True
+                self.start_delay()
+                # self.word_label.grid_remove()
         else:
-            self.drawing_enabled = True
-            self.chat_window.guess_enabled = True
-            self.start_delay()
-            # self.word_label.grid_remove()
+            messagebox.showerror("Error", "Pripojenie k internetu zlyhalo.")
 
     def start_delay(self):
         self.drawing_enabled = False
         tk.messagebox.showinfo("Slovo", self.hodnota)
-        self.timer_label.config(text="Čas: 60 s - Hra sa za chvíľu začne")
+        self.timer_label.config(text="Čas: 60 s - Hra sa za chvíľu začne", font=("Helvetica", 20))
         self.parent.after(5000, self.start_timer)
         self.clearScreen()
 
     def start_timer(self):
         if self.timer_id is not None:
             self.parent.after_cancel(self.timer_id)
-        print(self._address.get())
         self.drawing_enabled = True
         self.timer_seconds = 60
         self.update_timer_label()
 
-    def update_timer_label(self):
-        self.timer_label.config(text=f"Čas: {self.timer_seconds} s")
-        if self.timer_seconds > 0:
-            self.timer_seconds -= 1
-            if self.timer_seconds == 39 or self.timer_seconds == 19:
-                self.hodnota2 = ciarky_premena(self.hodnota, self.hodnota2)
-                self.letter_label.config(text=self.hodnota2)
-            self.timer_id = self.parent.after(1000, self.update_timer_label)
-        else:
-            self.timer_id = None
-            messagebox.showinfo("Koniec času", "Čas vypršal!")
+    def check_internet_connection(self):
+        if is_ip_connected():
+            # Internet connection is established
+            self.drawing_enabled = True
             self.start_delay()
             self.update_word()
-            if self.timer_seconds == 39 or self.timer_seconds == 19:
-                self.hodnota2 = ciarky_premena(self.hodnota, self.hodnota2)
-                self.letter_label.config(text=self.hodnota2)
+            print("Internet connection reestablished.")
+        else:
+            # Internet connection is still not established, retry after a delay
+            self.parent.after(5000, self.check_internet_connection)
+
+    def update_timer_label(self):
+        self.timer_label.config(text=f"Čas: {self.timer_seconds} s", font=("Helvetica", 20))
+
+        if is_ip_connected():
+            if self.timer_seconds > 0:
+                self.timer_seconds -= 1
+                if self.timer_seconds == 39 or self.timer_seconds == 19:
+                    self.hodnota2 = ciarky_premena(self.hodnota, self.hodnota2)
+                    self.letter_label.config(text=self.hodnota2)
+                self.timer_id = self.parent.after(1000, self.update_timer_label)
+            else:
+                self.timer_id = None
+                messagebox.showinfo("Koniec času", "Čas vypršal!")
+                self.start_delay()
+                self.update_word()
+                if self.timer_seconds == 39 or self.timer_seconds == 19:
+                    self.hodnota2 = ciarky_premena(self.hodnota, self.hodnota2)
+                    self.letter_label.config(text=self.hodnota2)
+        else:
+            messagebox.showerror("Error", "Pripojenie k internetu zlyhalo.")
+            self.drawing_enabled = False
+            self.check_internet_connection()
 
     def stop_timer(self):
         if self.timer_id is not None:
@@ -172,7 +206,7 @@ class PaintApp:
         self.hodnota = vyberSlovo()
         self.hodnota2 = ciarky(self.hodnota)
         # self.word_label.config(text="Vybrané slovo: " + self.hodnota)
-        self.letter_label.config(text="" + self.hodnota2)
+        self.letter_label.config(text="" + self.hodnota2, font=("Helvetica", 20))
         self.clearScreen()
         self.stop_timer()
         self.start_delay()
@@ -226,13 +260,15 @@ class PaintApp:
         self.canvas.delete("all")
 
     def update_thickness_label(self):
-        self.thicknessLabel.config(text=f"Hrubka: {self.stroke}")
+        self.thicknessLabel.config(text=f"Hrubka: {self.stroke}", font=("Helvetica", 13))
 
 class ChatWindow:
 
     def __init__(self, parent, paint_app):
+        self.ip_list2 = ip_list2
         self.parent = parent
         self.ip_list = ip_list
+        self.ip_name_map = {}
         self.paint_app = paint_app
         self.frame = Frame(self.parent)
         self.frame.pack(fill=tk.BOTH, expand=True, padx=5, pady=5)
@@ -245,20 +281,25 @@ class ChatWindow:
         input_frame = Frame(self.frame)
         input_frame.pack(fill=tk.X)
 
+        self._message_name = tk.Entry(input_frame)
+        self._message_name.insert(0, "Tvoje meno")
+        self._message_name.pack(side=tk.LEFT, fill=tk.X, expand=True, padx=5, pady=5)
+        self._message_name.config(width=11, font=("Helvetica", 13))
+
         self._address = tk.Entry(input_frame)
         self._address.insert(0, '192.168.50.219')
         self._address.pack(side=tk.LEFT, padx=5, pady=5)
-        self._address.config(width=11)
+        self._address.config(width=11, font=("Helvetica", 13))
 
         self._message = tk.Entry(input_frame)
         self._message.insert(0, '')
         self._message.pack(side=tk.LEFT, fill=tk.X, expand=True, padx=5, pady=5)
         self._message.bind("<Return>", self.btn_pressed)
 
-        self._btn_send = Button(input_frame, text="Odoslat", command=self.btn_pressed)
+        self._btn_send = Button(input_frame, text="Odoslat", command=self.btn_pressed, font=("Helvetica", 13))
         self._btn_send.pack(side=tk.LEFT, padx=5, pady=5)
 
-        self._btn_connect = Button(input_frame, text="Pripojit", command=self.btn_pressed2)
+        self._btn_connect = Button(input_frame, text="Pripojit", command=self.btn_pressed2, font=("Helvetica", 13))
         self._btn_connect.pack(side=tk.LEFT, padx=5, pady=5)
 
         self._sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
@@ -268,67 +309,75 @@ class ChatWindow:
     def periodic(self):
         rx_ev, _, _ = select.select([self._sock], [], [], 0)
         if rx_ev:
-            data, address = self._sock.recvfrom(200)
-            if address[0] not in self.ip_list:
-                self.ip_list.append(address[0])
-            self.add_message(address[0], data.decode())
+            data, addr = self._sock.recvfrom(200)
+            ip_address = addr[0]
+            print(self.ip_name_map)
+            if ip_address not in self.ip_list:
+                self.ip_list.append(ip_address)
+
+
+            # Lookup the name in the dictionary, defaulting to the IP address if not found
+            name = self.ip_name_map[ip_address]
+            print(self.ip_name_map)
+            self.add_message(data.decode(), name)
+
             entered_word = data.decode()
             if entered_word == self.paint_app.hodnota:
                 self._message.delete(0, tk.END)
-                tk.messagebox.showinfo(":)", "Uhadol" + " " + address[0])
+                messagebox.showinfo(":)", f"Uhadol {name}")
                 self.paint_app.update_word()
                 self.paint_app.stop_timer()
                 # self.paint_app.start_delay()
-            print(data.decode())
         self.parent.after(1000, self.periodic)
 
-    def add_message(self, address, message):
+    def add_message(self, message, name):
         if not self.guess_enabled:
             return
         timestamp = datetime.datetime.now().strftime('%H:%M:%S')
-        self.listbox.insert(tk.END, f"{timestamp} {address}: {message}")
+        self.listbox.insert(tk.END, f"{timestamp} {name}: {message}")
         self.listbox.yview(tk.END)
 
     def btn_pressed(self, event=None):
         message = self._message.get().strip()
         address = self._address.get()
-        if address and message:
+        name = self._message_name.get()
+        if address and message and name:
             self._sock.sendto(message.encode(), (address, 20000))
-            self.add_message(address, message)
+            self.add_message(message, name)
             self._message.delete(0, tk.END)
             return
         self._message.delete(0, tk.END)
 
     def btn_pressed2(self, event=None):
         address = self._address.get()
-        if address:
-            self._sock.sendto(address.encode(), (address, 20000))
+        name = self._message_name.get()
+        if address and name:
+            self._sock.sendto(name.encode(), (address, 20000))
+            self.ip_name_map[address] = name  # Update the dictionary with the name
+            print(f"Mapping added: {address} -> {name}")
             self._message.delete(0, tk.END)
             return
         self._message.delete(0, tk.END)
-
-    def start_guessing_after_delay(self):
-        self.guess_enabled = True
 
 
 if __name__ == "__main__":
     root = tk.Tk()
     root.title("Hadaj.oi")
-    root.geometry("1400x650")
+    root.geometry("1600x800")
 
     header_frame = Frame(root, height=50, width=1100)
     header_frame.pack(fill=tk.X, padx=5, pady=5)
 
-    timer_label = Label(header_frame, text="Čas: 60 s")
+    timer_label = Label(header_frame, text="Čas: 60 s", font=("Helvetica", 20))
     timer_label.pack(side=tk.LEFT, padx=5, pady=5)
 
-    letter_label = Label(header_frame, text=ciarky(vyberSlovo()))
+    letter_label = Label(header_frame, text=ciarky(vyberSlovo()), font=("Helvetica", 20))
     letter_label.pack(side=tk.LEFT, fill=tk.BOTH, expand=True, pady=5)
 
-    points_label = Label(header_frame, text="0")
+    points_label = Label(header_frame, text="0", font=("Helvetica", 20))
     points_label.pack(side=tk.RIGHT, padx=5, pady=5)
 
-    startButton = Button(header_frame, text="START", height=1, width=12, bg="green", fg="white")
+    startButton = Button(header_frame, text="START", height=1, width=12, bg="green", fg="white", font=("Helvetica", 15))
     startButton.pack(side=tk.RIGHT, padx=5, pady=5)
 
     body_frame = Frame(root, bg="dark gray")
