@@ -1,18 +1,17 @@
+import json
 import random
 import tkinter as tk
 from socket import socket
 from tkinter import Frame, Canvas, Button, Label, colorchooser, messagebox
-import socket
 import select
 import datetime
-import os
-import requests
 import tkinter.font as tkFont
 
 
 ip_list = []
 ip_list2 = {}
-
+vyber = "192.168.48.61"
+nekreslim = False
 
 def vyberSlovo():
     words = ["auto", "dom", "pes", "skola", "hra", "kniha", "cesta", "hracka", "kava", "mesto",
@@ -57,21 +56,23 @@ import socket
 
 def is_ip_connected():
     try:
-        # Attempt to connect to a known DNS server (8.8.8.8) on port 53
         socket.create_connection(("8.8.8.8", 53), timeout=5)
         return True
     except OSError:
         return False
 
-
+def is_color_dark(color):
+    r, g, b = int(color[1:3], 16), int(color[3:5], 16), int(color[5:7], 16)
+    luminance = 0.299 * r + 0.587 * g + 0.114 * b
+    return luminance < 128
 
 class PaintApp:
     def __init__(self, parent, chat_window, timer_label, points_label, letter_label):
         self.parent = parent
         self.startButton = startButton
         self.ip_list = ip_list
+        self.vyber = vyber
         self.chat_window = chat_window
-        self._address = chat_window._address
         self.timer_label = timer_label
         self.points_label = points_label
         self.letter_label = letter_label
@@ -106,9 +107,9 @@ class PaintApp:
         eraserButton.grid(row=0, column=1)
         eraserButton.bind("<Button-1>", lambda event: (reset_button_bg(), change_button_bg(eraserButton, "#c4c4c4"), setattr(self, "clicked_button", eraserButton)))
 
-        colorButton = Button(self.holder, text="Vyber Farbu", height=1, width=12, command=self.colorChoice, font=("Helvetica", 13))
-        colorButton.grid(row=0, column=2)
-        colorButton.bind("<Button-1>", lambda event: (reset_button_bg(), change_button_bg(colorButton, "#c4c4c4"), setattr(self, "clicked_button", colorButton)))
+        self.colorButton = Button(self.holder, text="Vyber Farbu", height=1, width=12, command=self.colorChoice, font=("Helvetica", 13))
+        self.colorButton.grid(row=0, column=2)
+        self.colorButton.bind("<Button-1>", lambda event: (reset_button_bg(), change_button_bg(self.colorButton, "#c4c4c4"), setattr(self, "clicked_button", self.colorButton)))
 
         sizeiButton = Button(self.holder, text="Hrubka +", height=1, width=12, command=self.strokeI, font=("Helvetica", 13))
         sizeiButton.grid(row=0, column=3)
@@ -133,22 +134,18 @@ class PaintApp:
         self.canvas.bind("<Button-1>", self.paint)
 
     def start_hra(self):
-        self.vyber = "192.168.48.61"
         if is_ip_connected():
             self.startButton.destroy()
-            if self.vyber == self._address.get():
+            if nekreslim:
                 self.drawing_enabled = False
                 self.chat_window.guess_enabled = True
                 self.timer_label.config(text="", font=("Helvetica", 20))
-                # self.word_label.grid_remove()
-                # self.new_word_button.grid_remove()
             else:
                 self.drawing_enabled = True
                 self.chat_window.guess_enabled = True
                 self.start_delay()
-                # self.word_label.grid_remove()
 
-            self.chat_window.hide_name_entry()
+            ##self.chat_window.hide_name_entry()
         else:
             messagebox.showerror("Error", "Pripojenie k internetu zlyhalo.")
 
@@ -208,7 +205,6 @@ class PaintApp:
     def update_word(self):
         self.hodnota = vyberSlovo()
         self.hodnota2 = ciarky(self.hodnota)
-        # self.word_label.config(text="Vybrané slovo: " + self.hodnota)
         self.letter_label.config(text="" + self.hodnota2, font=("Helvetica", 20))
         self.clearScreen()
         self.stop_timer()
@@ -233,9 +229,9 @@ class PaintApp:
         self.canvas.config(cursor="crosshair")
 
     def colorChoice(self):
-        color = colorchooser.askcolor(title="Vyber farbu")
-        if color[1]:
-            self.penColor = color[1]
+        self.penColor = colorchooser.askcolor(color=self.penColor)[1]
+        self.colorButton.config(bg=self.penColor)
+        self.colorButton.config(fg="white" if is_color_dark(self.penColor) else "black")
 
     def paint(self, event):
         if not self.drawing_enabled:
@@ -269,6 +265,7 @@ class ChatWindow:
 
     def __init__(self, parent, paint_app):
         self.parent = parent
+        self.vyber = vyber
         self.ip_list = []
         self.ip_name_map = {}
         self.paint_app = paint_app
@@ -277,7 +274,6 @@ class ChatWindow:
         self.guess_enabled = False
         self.body = 0
 
-        # Create a bigger font for the listbox
         self.listbox_font = tkFont.Font(family="Helvetica", size=14)
 
         self.listbox = tk.Listbox(self.frame, font=self.listbox_font)
@@ -291,15 +287,12 @@ class ChatWindow:
         self._message_name.pack(side=tk.LEFT, fill=tk.X, expand=True, padx=5, pady=5)
         self._message_name.config(width=11, font=("Helvetica", 13))
 
-        self._address = tk.Entry(input_frame)
-        self._address.insert(0, '192.168.50.219')
-        self._address.pack(side=tk.LEFT, padx=5, pady=5)
-        self._address.config(width=14, font=("Helvetica", 13))
 
         self._message = tk.Entry(input_frame)
         self._message.insert(0, '')
         self._message.pack(side=tk.LEFT, fill=tk.X, expand=True, padx=5, pady=5)
         self._message.bind("<Return>", self.btn_pressed)
+        self._message.config(width=11, font=("Helvetica", 13))
 
         self._btn_send = Button(input_frame, text="Odoslat", command=self.btn_pressed, font=("Helvetica", 13))
         self._btn_send.pack(side=tk.LEFT, padx=5, pady=5)
@@ -319,25 +312,31 @@ class ChatWindow:
         if rx_ev:
             data, addr = self._sock.recvfrom(200)
             ip_address = addr[0]
-            print(self.ip_name_map)
             if ip_address not in self.ip_list:
                 self.ip_list.append(ip_address)
+                print(f"New IP address added: {ip_address}")
 
-            # Lookup the name in the dictionary, defaulting to the IP address if not found
-            name = self.ip_name_map.get(ip_address, ip_address)
-            print(self.ip_name_map)
-            self.add_message(data.decode(), name)
+            # Deserialize the message
+            try:
+                message_data = json.loads(data.decode())
+                name = message_data.get("name", ip_address)
+                message = message_data.get("message", "")
+            except json.JSONDecodeError:
+                name = ip_address
+                message = data.decode()
 
-            entered_word = data.decode()
-            if entered_word == self.paint_app.hodnota:
+            self.add_message(name, message)
+
+            if message == self.paint_app.hodnota:
                 self._message.delete(0, tk.END)
                 messagebox.showinfo(":)", f"Uhadol {name}")
                 self.paint_app.update_word()
                 self.paint_app.stop_timer()
                 # self.paint_app.start_delay()
+            print(f"Data decoded: {data.decode()}")
         self.parent.after(1000, self.periodic)
 
-    def add_message(self, message, name):
+    def add_message(self, name, message):
         if not self.guess_enabled:
             return
         timestamp = datetime.datetime.now().strftime('%H:%M:%S')
@@ -346,20 +345,24 @@ class ChatWindow:
 
     def btn_pressed(self, event=None):
         message = self._message.get().strip()
-        address = self._address.get()
+        address = self.vyber
         name = self._message_name.get()
         if address and message and name:
-            self._sock.sendto(message.encode(), (address, 20000))
-            self.add_message(message, name)
+            # Serialize the message and name
+            message_data = {
+                "name": name,
+                "message": message
+            }
+            self._sock.sendto(json.dumps(message_data).encode(), (address, 20000))
+            self.add_message(name, message)
             self._message.delete(0, tk.END)
             return
         self._message.delete(0, tk.END)
 
     def btn_pressed2(self, event=None):
-        address = self._address.get()
+        address = self.vyber
         name = self._message_name.get()
         if address and name:
-            self._sock.sendto(name.encode(), (address, 20000))
             self.ip_name_map[address] = name  # Update the dictionary with the name
             print(f"Mapping added: {address} -> {name}")
             self._message.delete(0, tk.END)
@@ -396,9 +399,8 @@ if __name__ == "__main__":
     chat_frame = Frame(body_frame, width=550, bg="white")
     chat_frame.pack(side=tk.RIGHT, fill=tk.BOTH, expand=True, padx=5, pady=5)
 
-    chat_window = ChatWindow(chat_frame, None)  # Pass None for paint_app for now
+    chat_window = ChatWindow(chat_frame, None)
     paint_app = PaintApp(paint_frame, chat_window, timer_label, points_label, letter_label)
-    # Now chat_window is defined, so you can pass it to PaintApp
     startButton.config(command=paint_app.start_hra)
 
     chat_window.paint_app = paint_app
