@@ -21,15 +21,15 @@ def vyberSlovo():
              "ocean", "rieka", "jazero", "plaz", "lod", "lietadlo", "vlak",
              "hory", "zima", "jesen", "jar", "leto", "mracno", "dazd",
              "sneh", "vietor", "mraz", "teplota", "krajina", "polnohospodarstvo", "lesnicstvo",
-             "zvierata", "pes", "macka", "vtak", "ryba", "sliepka", "krava", "ovca", "koza",
-             "konik", "zirafa", "lev", "tiger", "slon", "medved", "vlk", "cajka", "sova",
-             "papagaj", "korytnacka", "krokodil", "hady", "zajac", "mys", "hadica", "motyl",
+             "zvierata", "pes", "macka", "ryba", "krava", "ovca", "koza",
+             "konik", "zirafa", "lev", "tiger", "slon", "medved", "vlk", "sova",
+             "korytnacka", "krokodil", "hady", "mys", "hadica", "motyl",
              "vcela", "mravce", "skorpion", "mravciar", "slon", "zirafa", "tiger", "jazvec",
              "gorila", "orangutan", "simpanz", "delfin", "velryba", "tucniak", "pingvin",
-             "papagaj", "kanar", "holub", "sokol", "orol", "kondor", "sliepka", "kacica",
-             "hus", "labut", "cajka", "sova", "straka", "kos", "vazka", "motyl", "chrobak",
+             "papagaj", "kanar", "holub", "sokol", "orol", "kondor", "sliepka",
+             "kos", "vazka", "motyl", "chrobak", "koza bobkov", "ujo to je mercedes",
              "komar", "osadka", "vcela", "medovacik", "pcela", "bumbar", "motylik", "hmyz",
-             "krava", "dazd", "mraz", "vietor", "jesen", "zima", "zima", "jesen", "leto"]
+             "krava", "dazd", "mraz", "vietor", "jesen", "zima", "jesen", "leto"]
 
     current_word = random.choice(words)
     return current_word
