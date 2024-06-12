@@ -1,3 +1,4 @@
+import json
 import random
 import tkinter as tk
 from socket import socket
@@ -10,6 +11,7 @@ import tkinter.font as tkFont
 ip_list = []
 ip_list2 = {}
 vyber = "192.168.48.61"
+nekreslim = True
 
 def vyberSlovo():
     words = ["auto", "dom", "pes", "skola", "hra", "kniha", "cesta", "hracka", "kava", "mesto",
@@ -134,7 +136,7 @@ class PaintApp:
     def start_hra(self):
         if is_ip_connected():
             self.startButton.destroy()
-            if self.vyber:
+            if nekreslim:
                 self.drawing_enabled = False
                 self.chat_window.guess_enabled = True
                 self.timer_label.config(text="", font=("Helvetica", 20))
@@ -309,24 +311,31 @@ class ChatWindow:
         if rx_ev:
             data, addr = self._sock.recvfrom(200)
             ip_address = addr[0]
-            print(self.ip_name_map)
             if ip_address not in self.ip_list:
                 self.ip_list.append(ip_address)
+                print(f"New IP address added: {ip_address}")
 
-            # Lookup the name in the dictionary, defaulting to the IP address if not found
-            name = self.ip_name_map.get(ip_address, ip_address)
-            print(self.ip_name_map)
-            self.add_message(data.decode(), name)
+            # Deserialize the message
+            try:
+                message_data = json.loads(data.decode())
+                name = message_data.get("name", ip_address)
+                message = message_data.get("message", "")
+            except json.JSONDecodeError:
+                name = ip_address
+                message = data.decode()
 
-            entered_word = data.decode()
-            if entered_word == self.paint_app.hodnota:
+            self.add_message(name, message)
+
+            if message == self.paint_app.hodnota:
                 self._message.delete(0, tk.END)
                 messagebox.showinfo(":)", f"Uhadol {name}")
                 self.paint_app.update_word()
                 self.paint_app.stop_timer()
+                # self.paint_app.start_delay()
+            print(f"Data decoded: {data.decode()}")
         self.parent.after(1000, self.periodic)
 
-    def add_message(self, message, name):
+    def add_message(self, name, message):
         if not self.guess_enabled:
             return
         timestamp = datetime.datetime.now().strftime('%H:%M:%S')
@@ -338,8 +347,13 @@ class ChatWindow:
         address = self.vyber
         name = self._message_name.get()
         if address and message and name:
-            self._sock.sendto(message.encode(), (address, 20000))
-            self.add_message(message, name)
+            # Serialize the message and name
+            message_data = {
+                "name": name,
+                "message": message
+            }
+            self._sock.sendto(json.dumps(message_data).encode(), (address, 20000))
+            self.add_message(name, message)
             self._message.delete(0, tk.END)
             return
         self._message.delete(0, tk.END)
@@ -348,7 +362,6 @@ class ChatWindow:
         address = self.vyber
         name = self._message_name.get()
         if address and name:
-            self._sock.sendto(name.encode(), (address, 20000))
             self.ip_name_map[address] = name  # Update the dictionary with the name
             print(f"Mapping added: {address} -> {name}")
             self._message.delete(0, tk.END)
