@@ -144,7 +144,7 @@ class PaintApp:
 
     def start_hra(self):
         self.startButton.destroy()
-        self.vyber = "192.168.68.106"
+        self.vyber = "192.168.50.112"
         if self.vyber == self._address.get():
             self.drawing_enabled = False
             self.chat_window.guess_enabled = True
