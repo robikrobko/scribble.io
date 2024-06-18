@@ -1,18 +1,23 @@
 import json
 import random
 import tkinter as tk
+from tkinter import *
 from socket import socket
 from tkinter import Frame, Canvas, Button, Label, colorchooser, messagebox
 import select
 import datetime
 import tkinter.font as tkFont
 import socket
+from tkinter import Entry, END
 
 
 ip_list = []
 ip_list2 = {}
 vyber = "192.168.48.61"
 nekreslim = False
+
+lst = []
+sorted_lst = sorted(lst, key=lambda x: x[1], reverse=True)
 
 
 def vyberSlovo():
@@ -333,10 +338,33 @@ class ChatWindow:
             if message == self.paint_app.hodnota:
                 self._message.delete(0, tk.END)
                 messagebox.showinfo(":)", f"Uhadol {name}")
+                hrac = []
+                body = 1
+
+                hrac.append(name)
+                hrac.append(body)
+
+                player_found = False
+                for hrac in lst:
+                    if hrac[0] == name:
+                        hrac[1] += 1  # Increment player's score
+                        player_found = True
+                        break
+
+                if not player_found:
+                    # If player is not in lst, add them with initial score 1
+                    hrac = [name, 1]
+                    lst.append(hrac)
+
+                sorted_lst = sorted(lst, key=lambda x: x[1], reverse=True)
+                t.update_table(sorted_lst)
+
                 self.paint_app.update_word()
                 self.paint_app.stop_timer()
             print(f"Data decoded: {data.decode()}")
         self.parent.after(1000, self.periodic)
+
+
 
     def add_message(self, name, message):
         if not self.guess_enabled:
@@ -371,6 +399,33 @@ class ChatWindow:
         self._message.delete(0, tk.END)
 
 
+class Table:
+    def __init__(self, master, data_table):
+        self.master = master
+        self.data_table = data_table
+        self.entries = []
+
+        self.create_table()
+
+    def create_table(self):
+        for i in range(len(self.data_table)):
+            for j in range(len(self.data_table[0])):
+                e = Entry(self.master, width=12, fg='black', font=('Arial', 16, 'bold'))
+                e.grid(row=i, column=j)
+                e.insert(END, self.data_table[i][j])
+                self.entries.append(e)
+
+    def clear_table(self):
+        for entry in self.entries:
+            entry.destroy()
+        self.entries = []
+
+    def update_table(self, new_data_table):
+        self.data_table = new_data_table
+        self.clear_table()
+        self.create_table()
+
+
 if __name__ == "__main__":
     root = tk.Tk()
     root.title("Hadaj.oi")
@@ -378,8 +433,8 @@ if __name__ == "__main__":
 
     if not nekreslim:
         master = tk.Tk()
+        t = Table(master, sorted_lst)
         master.title("Tabulka")
-        master.geometry("600x500")
 
         hadane_slovo = tk.Tk()
         hadane_slovo.title("Slovo")
