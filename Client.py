@@ -2,7 +2,6 @@ import json
 import random
 import tkinter as tk
 from tkinter import *
-from socket import socket
 from tkinter import Frame, Canvas, Button, Label, colorchooser, messagebox
 import select
 import datetime
@@ -13,7 +12,7 @@ from tkinter import Entry, END
 
 ip_list = []
 ip_list2 = {}
-vyber = "192.168.48.61"
+vyber = "192.168.100.42"
 nekreslim = False
 
 lst = []
@@ -23,20 +22,17 @@ sorted_lst = sorted(lst, key=lambda x: x[1], reverse=True)
 def vyberSlovo():
     words = ["auto", "dom", "pes", "skola", "hra", "kniha", "cesta", "hracka", "kava", "mesto",
              "les", "horska chata", "hracka", "jablko", "pocitac", "chlieb", "kolac", "jedlo",
-             "hudba", "film", "rastlina", "stol", "okno", "dvere", "lopta", "hudba",
-             "detska izba", "obchod", "trh", "obrazok", "fotografia", "krajina", "voda",
-             "ocean", "rieka", "jazero", "plaz", "lod", "lietadlo", "vlak",
-             "hory", "zima", "jesen", "jar", "leto", "mracno", "dazd",
-             "sneh", "vietor", "mraz", "teplota", "krajina", "polnohospodarstvo", "lesnicstvo",
-             "zvierata", "pes", "macka", "ryba", "krava", "ovca", "koza",
-             "konik", "zirafa", "lev", "tiger", "slon", "medved", "vlk", "sova",
-             "korytnacka", "krokodil", "hady", "mys", "hadica", "motyl",
-             "vcela", "mravce", "skorpion", "mravciar", "slon", "zirafa", "tiger", "jazvec",
-             "gorila", "orangutan", "simpanz", "delfin", "velryba", "tucniak", "pingvin",
-             "papagaj", "kanar", "holub", "sokol", "orol", "kondor", "sliepka",
-             "kos", "vazka", "motyl", "chrobak", "koza bobkov", "ujo to je mercedes",
-             "komar", "osadka", "vcela", "medovacik", "pcela", "bumbar", "motylik", "hmyz",
-             "krava", "dazd", "mraz", "vietor", "jesen", "zima", "jesen", "leto"]
+             "film", "rastlina", "stol", "okno", "dvere", "lopta", "detska izba", "obchod",
+             "trh", "obrazok", "fotografia", "krajina", "voda", "ocean", "rieka", "jazero",
+             "plaz", "lod", "lietadlo", "vlak", "hory", "zima", "jesen", "jar", "leto", "mracno",
+             "dazd", "sneh", "vietor", "mraz", "teplota", "krajina", "zvierata", "pes", "macka",
+             "ryba", "krava", "ovca", "koza", "konik", "zirafa", "lev", "tiger", "slon", "medved",
+             "vlk", "sova", "korytnacka", "krokodil", "had", "mys", "hadica", "motyl", "vcela",
+             "mravce", "skorpion", "mravciar", "slon", "tiger", "gorila", "orangutan", "simpanz",
+             "delfin", "velryba", "tucniak", "papagaj", "holub", "orol", "sliepka", "kos", "motyl",
+             "chrobak", "ujo to je mercedes", "komar", "osadka", "vcela", "medovacik",
+             "pcela", "hmyz", "krava", "dazd", "mraz", "vietor", "jesen", "zima", "jesen",
+             "leto", "igor", "filip", "palo"]
 
     current_word = random.choice(words)
     return current_word
@@ -75,14 +71,13 @@ def is_color_dark(color):
 
 
 class PaintApp:
-    def __init__(self, parent, chat_window, timer_label, points_label, letter_label):
+    def __init__(self, parent, chat_window, timer_label, letter_label):
         self.parent = parent
         self.startButton = startButton
         self.ip_list = ip_list
         self.vyber = vyber
         self.chat_window = chat_window
         self.timer_label = timer_label
-        self.points_label = points_label
         self.letter_label = letter_label
         self.hodnota = vyberSlovo()
         self.hodnota2 = ciarky(self.hodnota)
@@ -97,7 +92,7 @@ class PaintApp:
         self.clicked_button = None
 
     def setup_ui(self):
-        self.holder = Frame(self.parent, height=120, width=500, bg="dark gray", padx=100, pady=10)
+        self.holder = Frame(self.parent, height=120, width=500, bg="#303030", padx=100, pady=10)
         self.holder.pack(fill=tk.X, padx=5, pady=5)
 
         def change_button_bg(button, color):
@@ -430,6 +425,7 @@ if __name__ == "__main__":
     root = tk.Tk()
     root.title("Hadaj.oi")
     root.geometry("1600x800")
+    root.config(bg="#303030")
 
     if not nekreslim:
         master = tk.Tk()
@@ -452,23 +448,20 @@ if __name__ == "__main__":
     letter_label = Label(header_frame, text=ciarky(vyberSlovo()), font=("Helvetica", 20))
     letter_label.pack(side=tk.LEFT, fill=tk.BOTH, expand=True, pady=5)
 
-    points_label = Label(header_frame, text="0", font=("Helvetica", 20))
-    points_label.pack(side=tk.RIGHT, padx=5, pady=5)
-
     startButton = Button(header_frame, text="START", height=1, width=12, bg="green", fg="white", font=("Helvetica", 15))
     startButton.pack(side=tk.RIGHT, padx=5, pady=5)
 
-    body_frame = Frame(root, bg="dark gray")
+    body_frame = Frame(root, bg="#303030")
     body_frame.pack(fill=tk.BOTH, expand=True)
 
-    paint_frame = Frame(body_frame, width=550, bg="dark gray")
+    paint_frame = Frame(body_frame, width=550, bg="#303030")
     paint_frame.pack(side=tk.LEFT, fill=tk.BOTH, expand=True, padx=5, pady=5)
 
-    chat_frame = Frame(body_frame, width=550, bg="white")
+    chat_frame = Frame(body_frame, width=550, bg="#303030")
     chat_frame.pack(side=tk.RIGHT, fill=tk.BOTH, expand=True, padx=5, pady=5)
 
     chat_window = ChatWindow(chat_frame, None)
-    paint_app = PaintApp(paint_frame, chat_window, timer_label, points_label, letter_label)
+    paint_app = PaintApp(paint_frame, chat_window, timer_label, letter_label)
     startButton.config(command=paint_app.start_hra)
 
     chat_window.paint_app = paint_app
