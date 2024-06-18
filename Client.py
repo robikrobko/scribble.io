@@ -376,13 +376,17 @@ if __name__ == "__main__":
     root.title("Hadaj.oi")
     root.geometry("1600x800")
 
-    master = tk.Tk()
-    master.title("Tabulka")
-    master.geometry("600x500")
+    if not nekreslim:
+        master = tk.Tk()
+        master.title("Tabulka")
+        master.geometry("600x500")
 
-    hadane_slovo = tk.Tk()
-    hadane_slovo.title("Slovo")
-    hadane_slovo.geometry("200x100")
+        hadane_slovo = tk.Tk()
+        hadane_slovo.title("Slovo")
+        hadane_slovo.geometry("200x100")
+
+    else:
+        hadane_slovo = None
 
     header_frame = Frame(root, height=50, width=1100)
     header_frame.pack(fill=tk.X, padx=5, pady=5)
@@ -414,9 +418,11 @@ if __name__ == "__main__":
 
     chat_window.paint_app = paint_app
 
-    master.resizable(False, False)
-    master.mainloop()
-    hadane_slovo.resizable(False, False)
-    hadane_slovo.mainloop()
+    if not nekreslim:
+        master.resizable(False, False)
+        master.mainloop()
+        hadane_slovo.resizable(False, False)
+        hadane_slovo.mainloop()
+
     root.resizable(False, False)
     root.mainloop()
