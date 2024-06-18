@@ -6,12 +6,14 @@ from tkinter import Frame, Canvas, Button, Label, colorchooser, messagebox
 import select
 import datetime
 import tkinter.font as tkFont
+import socket
 
 
 ip_list = []
 ip_list2 = {}
 vyber = "192.168.48.61"
 nekreslim = False
+
 
 def vyberSlovo():
     words = ["auto", "dom", "pes", "skola", "hra", "kniha", "cesta", "hracka", "kava", "mesto",
@@ -52,7 +54,6 @@ def ciarky_premena(hodnota, hodnota2):
             break
     return " ".join(novy)
 
-import socket
 
 def is_ip_connected():
     try:
@@ -61,10 +62,12 @@ def is_ip_connected():
     except OSError:
         return False
 
+
 def is_color_dark(color):
     r, g, b = int(color[1:3], 16), int(color[3:5], 16), int(color[5:7], 16)
     luminance = 0.299 * r + 0.587 * g + 0.114 * b
     return luminance < 128
+
 
 class PaintApp:
     def __init__(self, parent, chat_window, timer_label, points_label, letter_label):
@@ -125,9 +128,11 @@ class PaintApp:
         self.thicknessLabel = Label(self.holder, text=f"Hrubka: {self.stroke}", height=1, width=12, font=("Helvetica", 13))
         self.thicknessLabel.grid(row=0, column=6)
 
-
         self.canvas = Canvas(self.parent, height=450, width=500, bg="white", cursor="pencil")
         self.canvas.pack(fill=tk.BOTH, expand=True, padx=5, pady=5)
+
+        self.hadane_slovo_label = tk.Label(hadane_slovo, text="")
+        self.hadane_slovo_label.pack(padx=20, pady=20)
 
         self.canvas.bind("<B1-Motion>", self.paint)
         self.canvas.bind("<ButtonRelease-1>", self.paint)
@@ -151,7 +156,8 @@ class PaintApp:
 
     def start_delay(self):
         self.drawing_enabled = False
-        tk.messagebox.showinfo("Slovo", self.hodnota)
+        self.hadane_slovo_label.config(text=self.hodnota)
+        #tk.messagebox.showinfo("Slovo", self.hodnota)
         self.timer_label.config(text="Čas: 60 s - Hra sa za chvíľu začne", font=("Helvetica", 20))
         self.parent.after(5000, self.start_timer)
         self.clearScreen()
@@ -272,7 +278,6 @@ class ChatWindow:
         self.frame = Frame(self.parent)
         self.frame.pack(fill=tk.BOTH, expand=True, padx=5, pady=5)
         self.guess_enabled = False
-        self.body = 0
 
         self.listbox_font = tkFont.Font(family="Helvetica", size=14)
 
@@ -286,7 +291,6 @@ class ChatWindow:
         self._message_name.insert(0, "Tvoje meno")
         self._message_name.pack(side=tk.LEFT, fill=tk.X, expand=True, padx=5, pady=5)
         self._message_name.config(width=11, font=("Helvetica", 13))
-
 
         self._message = tk.Entry(input_frame)
         self._message.insert(0, '')
@@ -316,7 +320,6 @@ class ChatWindow:
                 self.ip_list.append(ip_address)
                 print(f"New IP address added: {ip_address}")
 
-            # Deserialize the message
             try:
                 message_data = json.loads(data.decode())
                 name = message_data.get("name", ip_address)
@@ -332,7 +335,6 @@ class ChatWindow:
                 messagebox.showinfo(":)", f"Uhadol {name}")
                 self.paint_app.update_word()
                 self.paint_app.stop_timer()
-                # self.paint_app.start_delay()
             print(f"Data decoded: {data.decode()}")
         self.parent.after(1000, self.periodic)
 
@@ -348,10 +350,9 @@ class ChatWindow:
         address = self.vyber
         name = self._message_name.get()
         if address and message and name:
-            # Serialize the message and name
             message_data = {
                 "name": name,
-                "message": message
+                "message": message,
             }
             self._sock.sendto(json.dumps(message_data).encode(), (address, 20000))
             self.add_message(name, message)
@@ -374,6 +375,14 @@ if __name__ == "__main__":
     root = tk.Tk()
     root.title("Hadaj.oi")
     root.geometry("1600x800")
+
+    master = tk.Tk()
+    master.title("Tabulka")
+    master.geometry("600x500")
+
+    hadane_slovo = tk.Tk()
+    hadane_slovo.title("Slovo")
+    hadane_slovo.geometry("200x100")
 
     header_frame = Frame(root, height=50, width=1100)
     header_frame.pack(fill=tk.X, padx=5, pady=5)
@@ -405,5 +414,9 @@ if __name__ == "__main__":
 
     chat_window.paint_app = paint_app
 
+    master.resizable(False, False)
+    master.mainloop()
+    hadane_slovo.resizable(False, False)
+    hadane_slovo.mainloop()
     root.resizable(False, False)
     root.mainloop()
