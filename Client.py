@@ -1,7 +1,6 @@
 import json
 import random
 import tkinter as tk
-from tkinter import *
 from tkinter import Frame, Canvas, Button, Label, colorchooser, messagebox
 import select
 import datetime
@@ -12,7 +11,7 @@ from tkinter import Entry, END
 
 ip_list = []
 ip_list2 = {}
-vyber = "192.168.100.42"
+vyber = "192.168.48.62"
 nekreslim = False
 
 lst = []
@@ -342,14 +341,18 @@ class ChatWindow:
                 player_found = False
                 for hrac in lst:
                     if hrac[0] == name:
-                        hrac[1] += 1  # Increment player's score
+                        hrac[1] += 1
                         player_found = True
                         break
 
                 if not player_found:
-                    # If player is not in lst, add them with initial score 1
                     hrac = [name, 1]
                     lst.append(hrac)
+                if hrac[1] >= 10:
+                    messagebox.showinfo("Vyhreca", f"Vyhral: {name}")
+                    master.destroy()
+                    hadane_slovo.destroy()
+                    root.destroy()
 
                 sorted_lst = sorted(lst, key=lambda x: x[1], reverse=True)
                 t.update_table(sorted_lst)
@@ -358,8 +361,6 @@ class ChatWindow:
                 self.paint_app.stop_timer()
             print(f"Data decoded: {data.decode()}")
         self.parent.after(1000, self.periodic)
-
-
 
     def add_message(self, name, message):
         if not self.guess_enabled:
@@ -405,7 +406,7 @@ class Table:
     def create_table(self):
         for i in range(len(self.data_table)):
             for j in range(len(self.data_table[0])):
-                e = Entry(self.master, width=12, fg='black', font=('Arial', 16, 'bold'))
+                e = Entry(self.master, width=20, fg='black', font=('Arial', 25, 'bold'))
                 e.grid(row=i, column=j)
                 e.insert(END, self.data_table[i][j])
                 self.entries.append(e)
